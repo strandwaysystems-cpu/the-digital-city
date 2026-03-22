@@ -16,9 +16,9 @@ const BOOK_COVER = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVX
 const DISTRICT_MAP = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/district-map-83uWntFmNF9MUU34zhuUNs.webp";
 
 // ─── Beehiiv Integration ──────────────────────────────────────────────────────
-// TO ACTIVATE: Replace YOUR_PUBLICATION_ID with your real Beehiiv Publication ID.
-// Find it in Beehiiv → Settings → Publication → Publication ID (format: pub_xxxxxxxx)
-const BEEHIIV_PUBLICATION_ID = "YOUR_PUBLICATION_ID";
+// Using Beehiiv's hosted subscribe page (Option A)
+// Subscribers are redirected to the branded Beehiiv subscribe page with email pre-filled
+const BEEHIIV_SUBSCRIBE_URL = "https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe";
 
 // ─── Animation Variants ───────────────────────────────────────────────────────
 const fadeUp: Variants = {
@@ -72,64 +72,18 @@ function NavBar() {
 
 function EmailCapture({ variant = "hero" }: { variant?: "hero" | "inline" | "footer" }) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-
-    // If the publication ID hasn't been set yet, show a friendly placeholder response
-    if (BEEHIIV_PUBLICATION_ID === "YOUR_PUBLICATION_ID") {
-      setStatus("success");
-      return;
-    }
-
-    setStatus("loading");
-    setErrorMsg("");
-
-    try {
-      const res = await fetch(
-        `https://api.beehiiv.com/v2/publications/${BEEHIIV_PUBLICATION_ID}/subscriptions`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email,
-            reactivate_existing: false,
-            send_welcome_email: true,
-            utm_source: "website",
-            utm_medium: "organic",
-            utm_campaign: "hero_form",
-          }),
-        }
-      );
-
-      if (res.ok) {
-        setStatus("success");
-      } else {
-        const data = await res.json().catch(() => ({}));
-        setErrorMsg(data?.message || "Something went wrong. Please try again.");
-        setStatus("error");
-      }
-    } catch {
-      setErrorMsg("Network error. Please check your connection and try again.");
-      setStatus("error");
-    }
+    // Redirect to Beehiiv subscribe page with email pre-filled
+    const url = new URL(BEEHIIV_SUBSCRIBE_URL);
+    url.searchParams.set("email", email);
+    url.searchParams.set("utm_source", "website");
+    url.searchParams.set("utm_medium", "organic");
+    url.searchParams.set("utm_campaign", variant === "footer" ? "footer_form" : "hero_form");
+    window.open(url.toString(), "_blank", "noopener,noreferrer");
   };
-
-  if (status === "success") {
-    return (
-      <div className="flex items-center gap-3 text-amber-400">
-        <div className="w-5 h-5 rounded-full border border-amber-400 flex items-center justify-center">
-          <div className="w-2 h-2 rounded-full bg-amber-400" />
-        </div>
-        <span style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-sm">
-          You're in. Check your inbox.
-        </span>
-      </div>
-    );
-  }
 
   if (variant === "hero") {
     return (
@@ -141,21 +95,16 @@ function EmailCapture({ variant = "hero" }: { variant?: "hero" | "inline" | "foo
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"
             required
-            disabled={status === "loading"}
-            className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors disabled:opacity-50"
+            className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           />
           <button
             type="submit"
-            disabled={status === "loading"}
-            className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap disabled:opacity-60"
+            className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap"
           >
-            {status === "loading" ? "Joining..." : "Get Free Access"}
+            Get Free Access
           </button>
         </form>
-        {status === "error" && (
-          <p className="mt-2 text-xs text-red-400" style={{ fontFamily: "'DM Sans', sans-serif" }}>{errorMsg}</p>
-        )}
       </div>
     );
   }
@@ -170,21 +119,16 @@ function EmailCapture({ variant = "hero" }: { variant?: "hero" | "inline" | "foo
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email address"
             required
-            disabled={status === "loading"}
-            className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors disabled:opacity-50"
+            className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           />
           <button
             type="submit"
-            disabled={status === "loading"}
-            className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap disabled:opacity-60"
+            className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap"
           >
-            {status === "loading" ? "Joining..." : "Join the City"}
+            Join the City
           </button>
         </form>
-        {status === "error" && (
-          <p className="mt-2 text-xs text-red-400" style={{ fontFamily: "'DM Sans', sans-serif" }}>{errorMsg}</p>
-        )}
       </div>
     );
   }
