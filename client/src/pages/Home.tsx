@@ -15,6 +15,11 @@ const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge
 const BOOK_COVER = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/book-mockup-bg-mctHpTe5L8Ttdwy2wK24KA.webp";
 const DISTRICT_MAP = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/district-map-83uWntFmNF9MUU34zhuUNs.webp";
 
+// ─── Beehiiv Integration ──────────────────────────────────────────────────────
+// TO ACTIVATE: Replace YOUR_PUBLICATION_ID with your real Beehiiv Publication ID.
+// Find it in Beehiiv → Settings → Publication → Publication ID (format: pub_xxxxxxxx)
+const BEEHIIV_PUBLICATION_ID = "YOUR_PUBLICATION_ID";
+
 // ─── Animation Variants ───────────────────────────────────────────────────────
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -67,14 +72,53 @@ function NavBar() {
 
 function EmailCapture({ variant = "hero" }: { variant?: "hero" | "inline" | "footer" }) {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) setSubmitted(true);
+    if (!email) return;
+
+    // If the publication ID hasn't been set yet, show a friendly placeholder response
+    if (BEEHIIV_PUBLICATION_ID === "YOUR_PUBLICATION_ID") {
+      setStatus("success");
+      return;
+    }
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch(
+        `https://api.beehiiv.com/v2/publications/${BEEHIIV_PUBLICATION_ID}/subscriptions`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            reactivate_existing: false,
+            send_welcome_email: true,
+            utm_source: "website",
+            utm_medium: "organic",
+            utm_campaign: "hero_form",
+          }),
+        }
+      );
+
+      if (res.ok) {
+        setStatus("success");
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setErrorMsg(data?.message || "Something went wrong. Please try again.");
+        setStatus("error");
+      }
+    } catch {
+      setErrorMsg("Network error. Please check your connection and try again.");
+      setStatus("error");
+    }
   };
 
-  if (submitted) {
+  if (status === "success") {
     return (
       <div className="flex items-center gap-3 text-amber-400">
         <div className="w-5 h-5 rounded-full border border-amber-400 flex items-center justify-center">
@@ -89,45 +133,59 @@ function EmailCapture({ variant = "hero" }: { variant?: "hero" | "inline" | "foo
 
   if (variant === "hero") {
     return (
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
-          required
-          className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors"
-          style={{ fontFamily: "'DM Sans', sans-serif" }}
-        />
-        <button
-          type="submit"
-          className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap"
-        >
-          Get Free Access
-        </button>
-      </form>
+      <div className="w-full max-w-md">
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            required
+            disabled={status === "loading"}
+            className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors disabled:opacity-50"
+            style={{ fontFamily: "'DM Sans', sans-serif" }}
+          />
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap disabled:opacity-60"
+          >
+            {status === "loading" ? "Joining..." : "Get Free Access"}
+          </button>
+        </form>
+        {status === "error" && (
+          <p className="mt-2 text-xs text-red-400" style={{ fontFamily: "'DM Sans', sans-serif" }}>{errorMsg}</p>
+        )}
+      </div>
     );
   }
 
   if (variant === "footer") {
     return (
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full max-w-lg">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email address"
-          required
-          className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors"
-          style={{ fontFamily: "'DM Sans', sans-serif" }}
-        />
-        <button
-          type="submit"
-          className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap"
-        >
-          Join the City
-        </button>
-      </form>
+      <div className="w-full max-w-lg">
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email address"
+            required
+            disabled={status === "loading"}
+            className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors disabled:opacity-50"
+            style={{ fontFamily: "'DM Sans', sans-serif" }}
+          />
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap disabled:opacity-60"
+          >
+            {status === "loading" ? "Joining..." : "Join the City"}
+          </button>
+        </form>
+        {status === "error" && (
+          <p className="mt-2 text-xs text-red-400" style={{ fontFamily: "'DM Sans', sans-serif" }}>{errorMsg}</p>
+        )}
+      </div>
     );
   }
 
