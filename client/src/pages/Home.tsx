@@ -560,25 +560,31 @@ function DistrictsSection() {
 function ResourcesSection() {
   const resources = [
     {
-      type: "DIGITAL GUIDE",
+      type: "DIGITAL GUIDE · FREE",
       title: "The Builder's Toolkit",
-      desc: "Every tool, platform, and resource used to build and operate a digital asset portfolio — with honest assessments of what works.",
-      cta: "Get the Guide",
+      desc: "Every tool, platform, and resource you need to build a digital asset portfolio — with honest assessments of what works, what to skip, and what to buy first.",
+      cta: "Download Free",
       badge: "FREE",
+      price: null,
+      href: "#email-capture-bottom",
     },
     {
-      type: "DIGITAL PRODUCT",
+      type: "DIGITAL PRODUCT · $17",
       title: "Portfolio Blueprint",
-      desc: "A structured framework for designing your personal digital asset portfolio — asset categories, sequencing, and compounding mechanics.",
-      cta: "Coming Soon",
-      badge: "SOON",
+      desc: "A step-by-step system for building your first digital asset portfolio — from identifying your knowledge assets to launching your first product and earning your first $1,000/month.",
+      cta: "Get the Blueprint",
+      badge: "$17",
+      price: "$17",
+      href: "https://gumroad.com",
     },
     {
-      type: "AFFILIATE TOOLS",
+      type: "AFFILIATE TOOLS · CURATED",
       title: "Recommended Stack",
-      desc: "The exact tools and platforms the Strandway Systems studio uses to build and operate digital assets. No recommendations for commission alone.",
+      desc: "The exact tools the studio uses: Beehiiv for email, Hostinger for hosting, Canva for design, Gumroad for products. Every link is affiliate — every tool is genuine.",
       cta: "View the Stack",
       badge: "CURATED",
+      price: null,
+      href: "#email-capture-bottom",
     },
   ];
 
@@ -619,7 +625,11 @@ function ResourcesSection() {
                   <span className="coord-marker">{r.type}</span>
                   <span
                     style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.1em" }}
-                    className={`px-2 py-0.5 rounded-sm ${r.badge === "FREE" ? "bg-amber-400/15 text-amber-400" : r.badge === "SOON" ? "bg-white/8 text-white/40" : "bg-amber-400/10 text-amber-400/70"}`}
+                    className={`px-2 py-0.5 rounded-sm ${
+                      r.badge === "FREE" ? "bg-amber-400/15 text-amber-400" :
+                      r.badge === "CURATED" ? "bg-amber-400/10 text-amber-400/70" :
+                      "bg-amber-400/20 text-amber-400 font-bold"
+                    }`}
                   >
                     {r.badge}
                   </span>
@@ -633,20 +643,20 @@ function ResourcesSection() {
                 <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/45 text-sm leading-relaxed flex-1 mb-6">
                   {r.desc}
                 </p>
-                <button
-                  onClick={() => {
-                    if (r.badge === "SOON") {
-                      document.getElementById("email-capture-bottom")?.scrollIntoView({ behavior: "smooth" });
-                    } else {
-                      document.getElementById("email-capture-bottom")?.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}
-                  className={`text-sm flex items-center gap-2 transition-colors ${r.badge === "SOON" ? "text-white/30 cursor-default" : "text-amber-400 hover:text-amber-300"}`}
+                <a
+                  href={r.href}
+                  onClick={r.href.startsWith("#") ? (e) => {
+                    e.preventDefault();
+                    document.getElementById(r.href.slice(1))?.scrollIntoView({ behavior: "smooth" });
+                  } : undefined}
+                  target={r.href.startsWith("http") ? "_blank" : undefined}
+                  rel={r.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  className="text-sm flex items-center gap-2 transition-colors text-amber-400 hover:text-amber-300"
                   style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500 }}
                 >
                   {r.cta}
-                  {r.badge !== "SOON" && <ExternalLink size={12} />}
-                </button>
+                  <ExternalLink size={12} />
+                </a>
               </motion.div>
             ))}
           </div>
