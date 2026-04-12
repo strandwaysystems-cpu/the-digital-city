@@ -140,7 +140,7 @@ function EmailCapture({ variant = "hero" }: { variant?: "hero" | "inline" | "foo
 
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0">
         <img
@@ -154,7 +154,7 @@ function HeroSection() {
       {/* Grid texture */}
       <div className="absolute inset-0 grid-texture opacity-40" />
 
-      <div className="relative container pt-28 pb-20">
+      <div className="relative container pt-20 pb-16">
         <div className="max-w-3xl">
           {/* Coordinate label */}
           <motion.div
@@ -211,6 +211,9 @@ function HeroSection() {
               GET THE FREE FRAMEWORK GUIDE — NO SPAM, EVER
             </p>
             <EmailCapture variant="hero" />
+            <p className="mt-3 text-xs text-white/25" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              Join 200+ builders already inside the city.
+            </p>
           </motion.div>
 
           <motion.div
@@ -416,12 +419,15 @@ function BookSection() {
                 Get Free Chapter
                 <ArrowRight size={14} />
               </button>
-              <button
-                onClick={() => alert("Book purchase coming soon — join the email list to be notified.")}
-                className="btn-ghost-amber px-6 py-3 text-sm rounded-sm"
+              <a
+                href="https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost-amber px-6 py-3 text-sm rounded-sm inline-flex items-center gap-2"
               >
-                Pre-order the Book
-              </button>
+                Join the Waitlist
+                <ArrowRight size={14} />
+              </a>
             </motion.div>
           </motion.div>
         </div>
@@ -577,7 +583,7 @@ function ResourcesSection() {
       cta: "Get the Blueprint",
       badge: "$17",
       price: "$17",
-      href: "https://gumroad.com",
+      href: "https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe",
     },
     {
       type: "AFFILIATE TOOLS · CURATED",
@@ -586,7 +592,7 @@ function ResourcesSection() {
       cta: "View the Stack",
       badge: "CURATED",
       price: null,
-      href: "#email-capture-bottom",
+      href: "https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe",
     },
   ];
 
@@ -791,6 +797,26 @@ export default function Home() {
       <ResourcesSection />
       <EmailCaptureSection />
       <FooterSection />
+      {/* Mobile sticky CTA bar — only visible on small screens */}
+      <div className="mobile-cta-bar">
+        <a
+          href="https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-amber flex-1 py-3 text-sm rounded-sm text-center font-semibold"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        >
+          Get Free Access
+        </a>
+        <a
+          href="#book"
+          onClick={(e) => { e.preventDefault(); document.getElementById('book')?.scrollIntoView({ behavior: 'smooth' }); }}
+          className="btn-ghost-amber px-4 py-3 text-sm rounded-sm whitespace-nowrap"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        >
+          The Book
+        </a>
+      </div>
     </div>
   );
 }
