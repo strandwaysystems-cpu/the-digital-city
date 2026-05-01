@@ -568,6 +568,15 @@ function DistrictsSection() {
 function ResourcesSection() {
   const resources = [
     {
+      type: "STRATEGIC FRAMEWORK · FREE",
+      title: "The Sovereign Digital Entrepreneur",
+      desc: "Strategic frameworks for online monetization in 2026. Master AI orchestration, GEO, and zero-capital business models that scale from a laptop.",
+      cta: "Download Guide",
+      badge: "FREE",
+      price: null,
+      href: "#email-capture-bottom",
+    },
+    {
       type: "DIGITAL GUIDE · FREE",
       title: "The Builder's Toolkit",
       desc: "Every tool, platform, and resource you need to build a digital asset portfolio — with honest assessments of what works, what to skip, and what to buy first.",
@@ -621,7 +630,7 @@ function ResourcesSection() {
             Guides, frameworks, and tools to accelerate your move from consumer to builder-owner. Only what the studio actually uses.
           </motion.p>
 
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {resources.map((r, i) => (
               <motion.div
                 key={r.title}
