@@ -412,22 +412,22 @@ function BookSection() {
             </motion.div>
 
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
+              <a
+                href="https://gumroad.com/l/the-digital-city"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-amber px-6 py-3 text-sm rounded-sm flex items-center gap-2"
+              >
+                Buy the Ebook · $39
+                <ArrowRight size={14} />
+              </a>
               <button
                 onClick={() => document.getElementById("email-capture")?.scrollIntoView({ behavior: "smooth" })}
-                className="btn-amber px-6 py-3 text-sm rounded-sm flex items-center gap-2"
+                className="btn-ghost-amber px-6 py-3 text-sm rounded-sm flex items-center gap-2"
               >
                 Get Free Chapter
                 <ArrowRight size={14} />
               </button>
-              <a
-                href="https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-ghost-amber px-6 py-3 text-sm rounded-sm inline-flex items-center gap-2"
-              >
-                Join the Waitlist
-                <ArrowRight size={14} />
-              </a>
             </motion.div>
           </motion.div>
         </div>
@@ -567,6 +567,15 @@ function DistrictsSection() {
 
 function ResourcesSection() {
   const resources = [
+    {
+      type: "EBOOK · $39",
+      title: "The Digital City",
+      desc: "The complete guide to understanding the internet economy as a structured system. Learn how to see the digital city, identify where value concentrates, and build assets that generate wealth.",
+      cta: "Buy the Book",
+      badge: "$39",
+      price: "$39",
+      href: "https://gumroad.com/l/the-digital-city",
+    },
     {
       type: "STRATEGIC FRAMEWORK · FREE",
       title: "The Sovereign Digital Entrepreneur",
