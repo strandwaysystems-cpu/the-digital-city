@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE products SET fileUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/the-digital-city-ebook_84b735c5.pdf' WHERE slug = 'the-digital-city-ebook';\nUPDATE products SET fileUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/builders-toolkit_b5bf1667.pdf' WHERE slug = 'builders-toolkit';\nUPDATE products SET fileUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/portfolio-blueprint_582a363c.pdf' WHERE slug = 'portfolio-blueprint';\nUPDATE products SET fileUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/sovereign-digital-entrepreneur_fe6a1621.pdf' WHERE slug = 'sovereign-digital-entrepreneur';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user GJYmmWGB3hubMXo.4ba8234d88bf --database KVXDge6fvUaWycs2S4xzUy --execute UPDATE products SET fileUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/the-digital-city-ebook_84b735c5.pdf' WHERE slug = 'the-digital-city-ebook';\nUPDATE products SET fileUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/builders-toolkit_b5bf1667.pdf' WHERE slug = 'builders-toolkit';\nUPDATE products SET fileUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/portfolio-blueprint_582a363c.pdf' WHERE slug = 'portfolio-blueprint';\nUPDATE products SET fileUrl = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/sovereign-digital-entrepreneur_fe6a1621.pdf' WHERE slug = 'sovereign-digital-entrepreneur';",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 742
+}

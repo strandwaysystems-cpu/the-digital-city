@@ -416,15 +416,13 @@ function BookSection() {
             </motion.div>
 
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-              <a
-                href="https://gumroad.com/l/the-digital-city"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/store"
                 className="btn-amber px-6 py-3 text-sm rounded-sm flex items-center gap-2"
               >
                 Buy the Ebook · $39
                 <ArrowRight size={14} />
-              </a>
+              </Link>
               <button
                 onClick={() => document.getElementById("email-capture")?.scrollIntoView({ behavior: "smooth" })}
                 className="btn-ghost-amber px-6 py-3 text-sm rounded-sm flex items-center gap-2"
@@ -578,7 +576,7 @@ function ResourcesSection() {
       cta: "Buy the Book",
       badge: "$39",
       price: "$39",
-      href: "https://gumroad.com/l/the-digital-city",
+      href: "/store",
     },
     {
       type: "STRATEGIC FRAMEWORK · FREE",
@@ -605,7 +603,7 @@ function ResourcesSection() {
       cta: "Get the Blueprint",
       badge: "$17",
       price: "$17",
-      href: "https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe",
+      href: "/store",
     },
     {
       type: "AFFILIATE TOOLS · CURATED",

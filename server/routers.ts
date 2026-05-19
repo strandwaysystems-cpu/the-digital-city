@@ -81,9 +81,16 @@ export const appRouter = router({
           if (!access) throw new Error("No download access. Please purchase this product first.");
         }
 
-        // Get download URL from storage
-        if (!product.fileKey) throw new Error("Product file not available yet");
-        const { url } = await storageGet(product.fileKey);
+        // Get download URL — prefer fileUrl (CDN), fallback to storageGet(fileKey)
+        let url: string;
+        if (product.fileUrl) {
+          url = product.fileUrl;
+        } else if (product.fileKey) {
+          const result = await storageGet(product.fileKey);
+          url = result.url;
+        } else {
+          throw new Error("Product file not available yet");
+        }
 
         // Track download
         await incrementDownloadCount(ctx.user.id, input.productId);
