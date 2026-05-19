@@ -9,6 +9,7 @@
 import { motion, type Transition, type Variants } from "framer-motion";
 import { useState } from "react";
 import { ArrowRight, BookOpen, Building2, ChevronDown, Map, Zap, TrendingUp, Users, Mail, ExternalLink } from "lucide-react";
+import { Link } from "wouter";
 
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/hero-bg-5qJBjPa479HB3GPPoaxvoc.webp";
@@ -57,6 +58,9 @@ function NavBar() {
           <a href="#resources" className="text-xs text-white/50 hover:text-white/90 transition-colors hidden sm:block" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
             RESOURCES
           </a>
+          <Link href="/store" className="text-xs text-white/50 hover:text-white/90 transition-colors hidden sm:block" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
+            STORE
+          </Link>
           <a
             href="#email-capture"
             className="btn-amber px-4 py-1.5 text-xs rounded-sm"
