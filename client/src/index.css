@@ -1,10 +1,10 @@
 /* =============================================================
-   THE DIGITAL CITY — Design System
-   Philosophy: Dark Cartographic Minimal
-   - City-at-night palette: deep charcoal + off-white + amber
-   - Grid/map visual language referencing the book's core metaphor
-   - Space Grotesk display + DM Sans body
-   - Sparse, deliberate — every element earns its place
+   THE DIGITAL CITY — Design System v2
+   Philosophy: Premium Glassmorphism / Neon City
+   - Deep navy/midnight base with cyan + magenta neon accents
+   - Frosted glass cards, glow effects, gradient borders
+   - Inter display + JetBrains Mono code/labels
+   - Framer-level polish and micro-interactions
    ============================================================= */
 
 @import "tailwindcss";
@@ -36,58 +36,65 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-amber: var(--amber);
-  --font-display: var(--font-display-family);
-  --font-body: var(--font-body-family);
+  --color-cyan: var(--neon-cyan);
+  --color-magenta: var(--neon-magenta);
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 :root {
-  /* Core palette */
-  --background: oklch(0.13 0.008 260);          /* #111318 deep charcoal */
-  --foreground: oklch(0.93 0.005 80);            /* #F0EDE8 off-white */
-  --card: oklch(0.17 0.008 260);                 /* slightly lighter charcoal */
-  --card-foreground: oklch(0.93 0.005 80);
-  --popover: oklch(0.17 0.008 260);
-  --popover-foreground: oklch(0.93 0.005 80);
+  /* Core palette — deep midnight navy */
+  --background: oklch(0.10 0.025 270);           /* #0a0a1a deep navy */
+  --foreground: oklch(0.95 0.005 270);           /* near-white with cool tint */
+  --card: oklch(0.14 0.020 270 / 60%);           /* glass card bg */
+  --card-foreground: oklch(0.95 0.005 270);
+  --popover: oklch(0.14 0.020 270 / 80%);
+  --popover-foreground: oklch(0.95 0.005 270);
 
-  /* Amber accent — electric amber #F5A623 */
-  --primary: oklch(0.73 0.17 65);
-  --primary-foreground: oklch(0.13 0.008 260);
+  /* Cyan neon accent — primary */
+  --primary: oklch(0.80 0.18 195);               /* bright cyan */
+  --primary-foreground: oklch(0.10 0.025 270);
 
-  --secondary: oklch(0.20 0.008 260);
-  --secondary-foreground: oklch(0.80 0.005 80);
+  --secondary: oklch(0.18 0.020 270);
+  --secondary-foreground: oklch(0.85 0.005 270);
 
-  --muted: oklch(0.22 0.008 260);
-  --muted-foreground: oklch(0.60 0.010 80);
+  --muted: oklch(0.20 0.015 270);
+  --muted-foreground: oklch(0.60 0.010 270);
 
-  --accent: oklch(0.73 0.17 65);
-  --accent-foreground: oklch(0.13 0.008 260);
+  /* Magenta accent */
+  --accent: oklch(0.70 0.22 320);                /* vivid magenta/purple */
+  --accent-foreground: oklch(0.10 0.025 270);
 
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
 
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.73 0.17 65);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.80 0.18 195);
 
-  --radius: 0.25rem;
+  --radius: 0.75rem;
+
+  /* Neon colors for direct use */
+  --neon-cyan: oklch(0.80 0.18 195);
+  --neon-magenta: oklch(0.70 0.22 320);
+  --neon-blue: oklch(0.55 0.20 260);
 
   /* Chart colors */
-  --chart-1: oklch(0.73 0.17 65);
-  --chart-2: oklch(0.65 0.14 65);
-  --chart-3: oklch(0.55 0.12 65);
-  --chart-4: oklch(0.45 0.10 65);
-  --chart-5: oklch(0.35 0.08 65);
+  --chart-1: oklch(0.80 0.18 195);
+  --chart-2: oklch(0.70 0.22 320);
+  --chart-3: oklch(0.65 0.15 260);
+  --chart-4: oklch(0.60 0.12 195);
+  --chart-5: oklch(0.50 0.10 320);
 
   /* Sidebar */
-  --sidebar: oklch(0.17 0.008 260);
-  --sidebar-foreground: oklch(0.93 0.005 80);
-  --sidebar-primary: oklch(0.73 0.17 65);
-  --sidebar-primary-foreground: oklch(0.13 0.008 260);
-  --sidebar-accent: oklch(0.22 0.008 260);
-  --sidebar-accent-foreground: oklch(0.93 0.005 80);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.73 0.17 65);
+  --sidebar: oklch(0.12 0.020 270);
+  --sidebar-foreground: oklch(0.95 0.005 270);
+  --sidebar-primary: oklch(0.80 0.18 195);
+  --sidebar-primary-foreground: oklch(0.10 0.025 270);
+  --sidebar-accent: oklch(0.18 0.020 270);
+  --sidebar-accent-foreground: oklch(0.95 0.005 270);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.80 0.18 195);
 }
 
 @layer base {
@@ -96,10 +103,13 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -143,100 +153,191 @@
     }
   }
 
-  /* Amber underline accent */
-  .amber-underline {
-    position: relative;
-    display: inline-block;
+  /* ─── Glass Card ─────────────────────────────────────────────── */
+  .glass-card {
+    background: oklch(0.14 0.020 270 / 40%);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid oklch(1 0 0 / 8%);
+    border-radius: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .amber-underline::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: oklch(0.73 0.17 65);
+  .glass-card:hover {
+    border-color: oklch(0.80 0.18 195 / 30%);
+    box-shadow:
+      0 0 30px oklch(0.80 0.18 195 / 8%),
+      inset 0 1px 0 oklch(1 0 0 / 5%);
+    transform: translateY(-2px);
   }
 
-  /* Grid texture overlay */
-  .grid-texture {
+  /* ─── Gradient Border Card ──────────────────────────────────── */
+  .gradient-border {
+    position: relative;
+    border-radius: 1rem;
+    background: oklch(0.12 0.020 270);
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1rem;
+    padding: 1px;
+    background: linear-gradient(135deg, oklch(0.80 0.18 195 / 50%), oklch(0.70 0.22 320 / 50%), oklch(0.55 0.20 260 / 30%));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* ─── Neon Glow Text ────────────────────────────────────────── */
+  .text-glow-cyan {
+    color: oklch(0.80 0.18 195);
+    text-shadow: 0 0 20px oklch(0.80 0.18 195 / 50%), 0 0 40px oklch(0.80 0.18 195 / 20%);
+  }
+  .text-glow-magenta {
+    color: oklch(0.70 0.22 320);
+    text-shadow: 0 0 20px oklch(0.70 0.22 320 / 50%), 0 0 40px oklch(0.70 0.22 320 / 20%);
+  }
+
+  /* ─── Neon Buttons ──────────────────────────────────────────── */
+  .btn-neon {
+    background: linear-gradient(135deg, oklch(0.80 0.18 195), oklch(0.65 0.20 260));
+    color: oklch(0.10 0.025 270);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 20px oklch(0.80 0.18 195 / 30%);
+  }
+  .btn-neon:hover {
+    box-shadow: 0 0 40px oklch(0.80 0.18 195 / 50%), 0 4px 20px oklch(0.80 0.18 195 / 30%);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    border: 1px solid oklch(0.80 0.18 195 / 40%);
+    color: oklch(0.80 0.18 195);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-ghost:hover {
+    border-color: oklch(0.80 0.18 195);
+    background: oklch(0.80 0.18 195 / 8%);
+    box-shadow: 0 0 20px oklch(0.80 0.18 195 / 15%);
+  }
+
+  /* ─── Label / Tag ───────────────────────────────────────────── */
+  .tag-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: oklch(0.80 0.18 195 / 70%);
+  }
+
+  /* ─── Section Divider ───────────────────────────────────────── */
+  .section-divider {
+    border-top: 1px solid oklch(1 0 0 / 6%);
+  }
+
+  /* ─── Animated Gradient Background ──────────────────────────── */
+  .gradient-bg {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.80 0.18 195 / 15%), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 50%, oklch(0.70 0.22 320 / 10%), transparent),
+      radial-gradient(ellipse 50% 30% at 20% 80%, oklch(0.55 0.20 260 / 8%), transparent);
+  }
+
+  /* ─── Grid Overlay ──────────────────────────────────────────── */
+  .grid-overlay {
     background-image:
       linear-gradient(oklch(1 0 0 / 3%) 1px, transparent 1px),
       linear-gradient(90deg, oklch(1 0 0 / 3%) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-size: 60px 60px;
   }
 
-  /* Coordinate marker */
-  .coord-marker {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    color: oklch(0.73 0.17 65 / 60%);
-    text-transform: uppercase;
+  /* ─── Noise Texture ─────────────────────────────────────────── */
+  .noise-texture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    pointer-events: none;
   }
 
-  /* Section rule */
-  .section-rule {
-    border-top: 1px solid oklch(1 0 0 / 10%);
+  /* ─── Glow Orb ──────────────────────────────────────────────── */
+  .orb-cyan {
+    position: absolute;
+    border-radius: 50%;
+    background: oklch(0.80 0.18 195 / 20%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .orb-magenta {
+    position: absolute;
+    border-radius: 50%;
+    background: oklch(0.70 0.22 320 / 15%);
+    filter: blur(80px);
+    pointer-events: none;
   }
 
-  /* Amber glow button */
+  /* Legacy compatibility aliases */
   .btn-amber {
-    background: oklch(0.73 0.17 65);
-    color: oklch(0.13 0.008 260);
-    font-family: 'Space Grotesk', sans-serif;
+    background: linear-gradient(135deg, oklch(0.80 0.18 195), oklch(0.65 0.20 260));
+    color: oklch(0.10 0.025 270);
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
-    letter-spacing: 0.04em;
-    transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 20px oklch(0.80 0.18 195 / 30%);
   }
   .btn-amber:hover {
-    background: oklch(0.80 0.17 65);
-    box-shadow: 0 0 20px oklch(0.73 0.17 65 / 40%);
+    box-shadow: 0 0 40px oklch(0.80 0.18 195 / 50%), 0 4px 20px oklch(0.80 0.18 195 / 30%);
+    transform: translateY(-1px);
   }
-
-  /* Ghost button */
   .btn-ghost-amber {
-    border: 1px solid oklch(0.73 0.17 65 / 50%);
-    color: oklch(0.73 0.17 65);
-    font-family: 'Space Grotesk', sans-serif;
+    border: 1px solid oklch(0.80 0.18 195 / 40%);
+    color: oklch(0.80 0.18 195);
+    font-family: 'Inter', sans-serif;
     font-weight: 500;
-    letter-spacing: 0.04em;
-    transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .btn-ghost-amber:hover {
-    border-color: oklch(0.73 0.17 65);
-    background: oklch(0.73 0.17 65 / 8%);
+    border-color: oklch(0.80 0.18 195);
+    background: oklch(0.80 0.18 195 / 8%);
+    box-shadow: 0 0 20px oklch(0.80 0.18 195 / 15%);
   }
-
-  /* Mobile sticky CTA bar */
-  .mobile-cta-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 40;
-    background: oklch(0.13 0.008 260 / 95%);
-    border-top: 1px solid oklch(1 0 0 / 10%);
-    backdrop-filter: blur(12px);
-    padding: 0.75rem 1rem;
-    display: flex;
-    gap: 0.75rem;
+  .coord-marker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: oklch(0.80 0.18 195 / 70%);
   }
-  @media (min-width: 768px) {
-    .mobile-cta-bar {
-      display: none;
-    }
+  .section-rule {
+    border-top: 1px solid oklch(1 0 0 / 6%);
   }
-
-  /* Card with amber border on hover */
   .district-card {
+    background: oklch(0.14 0.020 270 / 40%);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
     border: 1px solid oklch(1 0 0 / 8%);
-    background: oklch(0.17 0.008 260);
-    transition: all 0.25s ease;
+    border-radius: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .district-card:hover {
-    border-color: oklch(0.73 0.17 65 / 40%);
-    background: oklch(0.19 0.008 260);
+    border-color: oklch(0.80 0.18 195 / 30%);
+    box-shadow:
+      0 0 30px oklch(0.80 0.18 195 / 8%),
+      inset 0 1px 0 oklch(1 0 0 / 5%);
     transform: translateY(-2px);
   }
 }

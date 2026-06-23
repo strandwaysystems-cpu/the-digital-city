@@ -46,3 +46,14 @@
 - [x] Vitest tests for product CRUD procedures
 - [x] Vitest tests for checkout flow (auth required)
 - [x] Vitest tests for download access control
+
+## Landing Page Makeover
+- [x] Upload new logo to CDN
+- [x] New color palette: deep navy base + cyan/magenta neon accents from logo
+- [x] Glassmorphism design system (frosted glass cards, glow effects, gradients)
+- [x] Rewrite hero section with premium Framer-level animations
+- [x] Update Districts to official 5: Intelligent & Autonomous, Attention & Media, E-Commerce & Retail, Financial & Fintech, Software & Enterprise
+- [x] Rewrite Book, Resources, and CTA sections with new design
+- [x] Update Store page to match new design system
+- [x] Update Account page to match new design system
+- [x] Remove Klaviyo env vars (not needed)

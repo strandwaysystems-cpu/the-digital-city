@@ -1,9 +1,11 @@
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { ArrowRight, BookOpen, Download, Lock, ShoppingCart, Sparkles } from "lucide-react";
+import { Download, ShoppingCart, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "wouter";
+
+const LOGO = "/manus-storage/digital-city-logo_c47ad8cb.jpg";
 
 export default function Store() {
   const { user, isAuthenticated } = useAuth();
@@ -41,32 +43,34 @@ export default function Store() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111318] text-white">
+    <div className="min-h-screen bg-[#0a0a1a] text-white relative">
+      {/* Ambient glow */}
+      <div className="orb-cyan w-[500px] h-[500px] -top-40 -right-40 opacity-20 fixed" />
+      <div className="orb-magenta w-[400px] h-[400px] bottom-0 left-0 opacity-10 fixed" />
+
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-md bg-[#111318]/80">
-        <div className="container flex items-center justify-between h-14">
-          <Link href="/">
-            <span
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: "0.06em" }}
-              className="text-sm text-white/90 uppercase tracking-widest cursor-pointer"
-            >
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-xl bg-[#0a0a1a]/70">
+        <div className="container flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-3">
+            <img src={LOGO} alt="The Digital City" className="w-8 h-8 rounded-lg" />
+            <span className="text-sm font-semibold text-white/90 tracking-tight">
               The Digital City
             </span>
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-xs text-white/50 hover:text-white/90 transition-colors" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-              HOME
+            <Link href="/" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+              Home
             </Link>
-            <Link href="/store" className="text-xs text-amber-400 transition-colors" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-              STORE
+            <Link href="/store" className="text-xs text-cyan-400 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+              Store
             </Link>
             {isAuthenticated ? (
-              <Link href="/account" className="text-xs text-white/50 hover:text-white/90 transition-colors" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-                MY ACCOUNT
+              <Link href="/account" className="text-xs text-white/40 hover:text-white/90 transition-colors font-medium tracking-wide uppercase">
+                Account
               </Link>
             ) : (
-              <a href={getLoginUrl("/store")} className="btn-amber px-4 py-1.5 text-xs rounded-sm" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }}>
-                SIGN IN
+              <a href={getLoginUrl("/store")} className="btn-neon px-5 py-2 text-xs font-semibold">
+                Sign In
               </a>
             )}
           </div>
@@ -74,30 +78,25 @@ export default function Store() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-28 pb-16">
+      <section className="pt-32 pb-16 relative">
         <div className="container">
-          <div className="coord-marker mb-4" style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.12em", color: "rgba(245,166,35,0.5)" }}>
-            THE DIGITAL CITY · STORE
-          </div>
-          <h1
-            style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-            className="text-4xl sm:text-5xl text-white mb-4"
-          >
-            Digital Products & <span className="text-amber-400">Guides</span>
+          <span className="tag-label mb-4 block">The Digital City · Store</span>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4 tracking-tight">
+            Digital Products & <span className="text-glow-cyan">Guides</span>
           </h1>
-          <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/50 max-w-xl leading-relaxed">
+          <p className="text-white/45 max-w-xl leading-relaxed">
             Everything you need to transition from consumer to builder-owner. Frameworks, blueprints, and tools — built from real experience.
           </p>
         </div>
       </section>
 
       {/* Products Grid */}
-      <section className="pb-24">
+      <section className="pb-24 relative">
         <div className="container">
           {isLoading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-white/5 border border-white/8 rounded-sm p-8 animate-pulse h-80" />
+                <div key={i} className="glass-card p-8 animate-pulse h-80" />
               ))}
             </div>
           ) : (
@@ -105,39 +104,27 @@ export default function Store() {
               {products?.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-[#161a20] border border-white/8 rounded-sm p-8 flex flex-col hover:border-amber-400/30 transition-colors group"
+                  className="glass-card p-8 flex flex-col group"
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between mb-6">
-                    <span
-                      style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.12em" }}
-                      className="text-amber-400/50 uppercase"
-                    >
+                    <span className="tag-label text-white/30">
                       {getProductTypeLabel(product.productType)}
                     </span>
-                    <span
-                      style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.1em" }}
-                      className={`px-2 py-0.5 rounded-sm ${
-                        product.isFree
-                          ? "bg-amber-400/15 text-amber-400"
-                          : "bg-amber-400/20 text-amber-400 font-bold"
-                      }`}
-                    >
+                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-md ${
+                      product.isFree
+                        ? "bg-cyan-400/10 text-cyan-400"
+                        : "bg-purple-400/10 text-purple-400"
+                    }`}>
                       {product.isFree ? "FREE" : `$${product.price}`}
                     </span>
                   </div>
 
                   {/* Title & Description */}
-                  <h3
-                    style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }}
-                    className="text-white text-xl mb-3"
-                  >
+                  <h3 className="text-white text-xl font-bold mb-3">
                     {product.name}
                   </h3>
-                  <p
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
-                    className="text-white/45 text-sm leading-relaxed flex-1 mb-6"
-                  >
+                  <p className="text-white/40 text-sm leading-relaxed flex-1 mb-6">
                     {product.shortDescription || product.description}
                   </p>
 
@@ -151,8 +138,7 @@ export default function Store() {
                         }
                         toast.info("Downloading...");
                       }}
-                      className="w-full flex items-center justify-center gap-2 py-3 text-sm rounded-sm border border-amber-400/30 text-amber-400 hover:bg-amber-400/10 transition-colors"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500 }}
+                      className="w-full flex items-center justify-center gap-2 py-3 text-sm rounded-lg border border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10 transition-all font-medium"
                     >
                       <Download size={14} />
                       Download Free
@@ -161,8 +147,7 @@ export default function Store() {
                     <button
                       onClick={() => handlePurchase(product.id)}
                       disabled={checkoutMutation.isPending}
-                      className="w-full flex items-center justify-center gap-2 py-3 text-sm rounded-sm bg-amber-400 text-[#111318] font-semibold hover:bg-amber-300 transition-colors disabled:opacity-50"
-                      style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }}
+                      className="w-full btn-neon flex items-center justify-center gap-2 py-3 text-sm disabled:opacity-50"
                     >
                       <ShoppingCart size={14} />
                       {checkoutMutation.isPending ? "Processing..." : `Buy · $${product.price}`}
@@ -176,11 +161,11 @@ export default function Store() {
           {/* Empty state */}
           {!isLoading && (!products || products.length === 0) && (
             <div className="text-center py-20">
-              <Sparkles size={48} className="text-amber-400/30 mx-auto mb-4" />
-              <h3 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }} className="text-white text-xl mb-2">
+              <Sparkles size={48} className="text-cyan-400/30 mx-auto mb-4" />
+              <h3 className="text-white text-xl font-bold mb-2">
                 Store Coming Soon
               </h3>
-              <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/40">
+              <p className="text-white/40">
                 Products are being prepared. Check back shortly.
               </p>
             </div>
@@ -189,12 +174,13 @@ export default function Store() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8">
+      <footer className="border-t border-white/5 py-10">
         <div className="container flex items-center justify-between">
-          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.12em" }} className="text-white/25 uppercase">
-            © 2026 STRANDWAY SYSTEMS
-          </p>
-          <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+          <div className="flex items-center gap-3">
+            <img src={LOGO} alt="The Digital City" className="w-6 h-6 rounded-md" />
+            <span className="text-sm font-medium text-white/40">Strandway Systems · 2026</span>
+          </div>
+          <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">
             Back to Home
           </Link>
         </div>

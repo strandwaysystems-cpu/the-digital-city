@@ -1,72 +1,73 @@
 /**
- * THE DIGITAL CITY — Home Landing Page
- * Design: Dark Cartographic Minimal
- * Palette: Charcoal (#111318) + Off-white (#F0EDE8) + Amber (#F5A623)
- * Fonts: Space Grotesk (display) + DM Sans (body) + Space Mono (labels)
+ * THE DIGITAL CITY — Home Landing Page v2
+ * Design: Premium Glassmorphism / Neon City
+ * Palette: Deep navy (#0a0a1a) + Cyan neon + Magenta neon
+ * Font: Inter (display + body) + JetBrains Mono (labels)
  * Goal: Email capture → Book sale → Digital products → Affiliate
  */
 
 import { motion, type Transition, type Variants } from "framer-motion";
 import { useState } from "react";
-import { ArrowRight, BookOpen, Building2, ChevronDown, Map, Zap, TrendingUp, Users, Mail, ExternalLink } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronDown, Cpu, Radio, ShoppingCart, Landmark, Code2, Sparkles, Mail, Download } from "lucide-react";
 import { Link } from "wouter";
 
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
-const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/hero-bg-5qJBjPa479HB3GPPoaxvoc.webp";
-const BOOK_COVER = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/book-mockup-bg-mctHpTe5L8Ttdwy2wK24KA.webp";
-const DISTRICT_MAP = "https://d2xsxph8kpxj0f.cloudfront.net/310519663417824304/KVXDge6fvUaWycs2S4xzUy/district-map-83uWntFmNF9MUU34zhuUNs.webp";
+const LOGO = "/manus-storage/digital-city-logo_c47ad8cb.jpg";
 
 // ─── Beehiiv Integration ──────────────────────────────────────────────────────
-// Using Beehiiv's hosted subscribe page (Option A)
-// Subscribers are redirected to the branded Beehiiv subscribe page with email pre-filled
 const BEEHIIV_SUBSCRIBE_URL = "https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe";
 
 // ─── Animation Variants ───────────────────────────────────────────────────────
 const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 30 },
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, delay: i * 0.1 } as Transition,
+    transition: { duration: 0.7, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] } as Transition,
   }),
 };
 
 const stagger: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } as Transition },
+  visible: { transition: { staggerChildren: 0.1 } as Transition },
+};
+
+const scaleIn: Variants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } as Transition,
+  },
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function NavBar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-md bg-[#111318]/80">
-      <div className="container flex items-center justify-between h-14">
-        <span
-          style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: "0.06em" }}
-          className="text-sm text-white/90 uppercase tracking-widest"
-        >
-          The Digital City
-        </span>
-        <div className="flex items-center gap-6">
-          <a href="#book" className="text-xs text-white/50 hover:text-white/90 transition-colors hidden sm:block" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-            THE BOOK
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-xl bg-[#0a0a1a]/70">
+      <div className="container flex items-center justify-between h-16">
+        <Link href="/" className="flex items-center gap-3">
+          <img src={LOGO} alt="The Digital City" className="w-8 h-8 rounded-lg" />
+          <span className="text-sm font-semibold text-white/90 tracking-tight">
+            The Digital City
+          </span>
+        </Link>
+        <div className="flex items-center gap-8">
+          <a href="#districts" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+            Districts
           </a>
-          <a href="#districts" className="text-xs text-white/50 hover:text-white/90 transition-colors hidden sm:block" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-            DISTRICTS
+          <a href="#book" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+            Book
           </a>
-          <a href="#resources" className="text-xs text-white/50 hover:text-white/90 transition-colors hidden sm:block" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-            RESOURCES
-          </a>
-          <Link href="/store" className="text-xs text-white/50 hover:text-white/90 transition-colors hidden sm:block" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-            STORE
+          <Link href="/store" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+            Store
           </Link>
           <a
-            href="#email-capture"
-            className="btn-amber px-4 py-1.5 text-xs rounded-sm"
-            style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: "0.06em" }}
+            href="#subscribe"
+            className="btn-neon px-5 py-2 text-xs font-semibold"
           >
-            GET THE MAP
+            Get Started
           </a>
         </div>
       </div>
@@ -74,168 +75,127 @@ function NavBar() {
   );
 }
 
-function EmailCapture({ variant = "hero" }: { variant?: "hero" | "inline" | "footer" }) {
+function EmailCapture({ variant = "hero" }: { variant?: "hero" | "footer" }) {
   const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    // Redirect to Beehiiv subscribe page with email pre-filled
     const url = new URL(BEEHIIV_SUBSCRIBE_URL);
     url.searchParams.set("email", email);
     url.searchParams.set("utm_source", "website");
     url.searchParams.set("utm_medium", "organic");
     url.searchParams.set("utm_campaign", variant === "footer" ? "footer_form" : "hero_form");
     window.open(url.toString(), "_blank", "noopener,noreferrer");
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
   };
 
-  if (variant === "hero") {
-    return (
-      <div className="w-full max-w-md">
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            required
-            className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors"
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
-          />
-          <button
-            type="submit"
-            className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap"
-          >
-            Get Free Access
-          </button>
-        </form>
-      </div>
-    );
-  }
-
-  if (variant === "footer") {
-    return (
-      <div className="w-full max-w-lg">
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email address"
-            required
-            className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-amber-400/60 transition-colors"
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
-          />
-          <button
-            type="submit"
-            className="btn-amber px-6 py-3 text-sm rounded-sm whitespace-nowrap"
-          >
-            Join the City
-          </button>
-        </form>
-      </div>
-    );
-  }
-
-  return null;
+  return (
+    <div className="w-full max-w-md">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+          required
+          className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all"
+        />
+        <button
+          type="submit"
+          disabled={submitted}
+          className="btn-neon px-6 py-3 text-sm whitespace-nowrap disabled:opacity-50"
+        >
+          {submitted ? "Sent!" : "Join Free"}
+        </button>
+      </form>
+    </div>
+  );
 }
 
 // ─── Sections ─────────────────────────────────────────────────────────────────
 
 function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden">
-      {/* Background image */}
-      <div className="absolute inset-0">
-        <img
-          src={HERO_BG}
-          alt=""
-          className="w-full h-full object-cover opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#111318]/60 via-[#111318]/40 to-[#111318]" />
-      </div>
+    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+      {/* Ambient glow orbs */}
+      <div className="orb-cyan w-[600px] h-[600px] -top-40 -left-40 opacity-30" />
+      <div className="orb-magenta w-[500px] h-[500px] -bottom-20 -right-20 opacity-20" />
+      <div className="orb-cyan w-[300px] h-[300px] top-1/2 right-1/4 opacity-15" />
 
-      {/* Grid texture */}
-      <div className="absolute inset-0 grid-texture opacity-40" />
+      {/* Grid overlay */}
+      <div className="absolute inset-0 grid-overlay opacity-30" />
 
-      <div className="relative container pt-20 pb-16">
-        <div className="max-w-3xl">
-          {/* Coordinate label */}
+      {/* Noise texture */}
+      <div className="absolute inset-0 noise-texture" />
+
+      <div className="relative container pt-24 pb-20">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Badge */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="coord-marker mb-8"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8"
           >
-            STRANDWAY SYSTEMS · DISTRICT 00 · ENTRY POINT
+            <Sparkles size={12} className="text-cyan-400" />
+            <span className="text-xs font-medium text-white/60">The framework for digital asset builders</span>
           </motion.div>
 
           {/* Main headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 32 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3, type: "tween" }}
-            style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.05 }}
-            className="text-5xl sm:text-6xl lg:text-7xl text-white mb-6"
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.05]"
           >
-            The internet is<br />
-            a{" "}
-            <span className="text-amber-400">city.</span>
+            The internet is a{" "}
+            <span className="text-glow-cyan">city.</span>
+            <br />
+            <span className="text-white/60 text-4xl sm:text-5xl lg:text-6xl font-bold">
+              Most people are renters.
+            </span>
           </motion.h1>
 
           {/* Sub-headline */}
           <motion.p
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.45, type: "tween" }}
-            style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 300 }}
-            className="text-lg sm:text-xl text-white/60 mb-4 max-w-xl leading-relaxed"
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="text-lg sm:text-xl text-white/50 mb-10 max-w-2xl mx-auto leading-relaxed font-light"
           >
-            Most people are renters. They scroll, click, and consume — generating wealth for everyone except themselves.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.55, type: "tween" }}
-            style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 400 }}
-            className="text-lg sm:text-xl text-white/80 mb-10 max-w-xl leading-relaxed"
-          >
-            <span className="text-amber-400 font-medium">The Digital City</span> is the map that shows you how to become an owner.
+            They scroll, click, and consume — generating wealth for platforms, not themselves.{" "}
+            <span className="text-white/80 font-medium">The Digital City</span> is the map that shows you how to become an owner.
           </motion.p>
 
           {/* CTA group */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.65 }}
-            id="email-capture"
-            className="mb-6"
+            transition={{ duration: 0.6, delay: 0.7 }}
+            id="subscribe"
+            className="flex flex-col items-center gap-4 mb-10"
           >
-            <p className="text-xs text-white/40 mb-3" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.1em" }}>
-              GET THE FREE FRAMEWORK GUIDE — NO SPAM, EVER
-            </p>
             <EmailCapture variant="hero" />
-            <p className="mt-3 text-xs text-white/25" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              Join 200+ builders already inside the city.
+            <p className="text-xs text-white/25 font-medium">
+              Free framework guide. No spam, ever.
             </p>
           </motion.div>
 
+          {/* Logo showcase */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="flex flex-wrap items-center gap-6"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="mt-12"
           >
-            <a href="#book" className="flex items-center gap-2 text-sm text-white/50 hover:text-amber-400 transition-colors group">
-              <BookOpen size={14} />
-              <span style={{ fontFamily: "'DM Sans', sans-serif" }}>Read the book</span>
-              <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-            </a>
-            <a href="#districts" className="flex items-center gap-2 text-sm text-white/50 hover:text-amber-400 transition-colors group">
-              <Map size={14} />
-              <span style={{ fontFamily: "'DM Sans', sans-serif" }}>Explore the districts</span>
-              <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-            </a>
+            <img
+              src={LOGO}
+              alt="The Digital City"
+              className="w-64 h-64 sm:w-80 sm:h-80 mx-auto rounded-2xl shadow-2xl shadow-cyan-500/20 border border-white/10"
+            />
           </motion.div>
         </div>
       </div>
@@ -244,15 +204,15 @@ function HeroSection() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
+        transition={{ delay: 1.5, duration: 0.6 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="coord-marker">SCROLL</span>
+        <span className="tag-label text-white/30">Scroll</span>
         <motion.div
           animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         >
-          <ChevronDown size={16} className="text-white/30" />
+          <ChevronDown size={16} className="text-white/20" />
         </motion.div>
       </motion.div>
     </section>
@@ -261,31 +221,28 @@ function HeroSection() {
 
 function TwoTypesSection() {
   return (
-    <section className="section-rule py-24">
+    <section className="section-divider py-28 relative">
       <div className="container">
         <motion.div
           variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid md:grid-cols-2 gap-px bg-white/8 rounded-sm overflow-hidden"
+          className="grid md:grid-cols-2 gap-6"
         >
           {/* Consumer side */}
-          <motion.div variants={fadeUp} className="bg-[#111318] p-10 md:p-14">
-            <div className="coord-marker mb-6">TYPE 01 · CONSUMER</div>
-            <h3
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }}
-              className="text-2xl text-white/40 mb-4 line-through decoration-white/20"
-            >
+          <motion.div variants={fadeUp} className="glass-card p-10 md:p-12 relative overflow-hidden">
+            <div className="tag-label mb-6 text-white/30">Type 01 · Consumer</div>
+            <h3 className="text-2xl font-bold text-white/30 mb-4 line-through decoration-white/15">
               The Renter
             </h3>
-            <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/40 leading-relaxed text-sm">
+            <p className="text-white/35 leading-relaxed text-sm mb-8">
               Scrolls, clicks, streams, and shares. Generates attention and data that make platforms worth billions. Participates in the economy every day without capturing any of the value they create.
             </p>
-            <div className="mt-8 space-y-2">
+            <div className="space-y-2.5">
               {["Trades time for money", "Rents attention to platforms", "Builds nothing that compounds", "Works until they can't"].map((item) => (
-                <div key={item} className="flex items-center gap-3 text-xs text-white/30" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                  <div className="w-1 h-1 rounded-full bg-white/20" />
+                <div key={item} className="flex items-center gap-3 text-xs text-white/25">
+                  <div className="w-1 h-1 rounded-full bg-white/15" />
                   {item}
                 </div>
               ))}
@@ -293,22 +250,19 @@ function TwoTypesSection() {
           </motion.div>
 
           {/* Builder-owner side */}
-          <motion.div variants={fadeUp} className="bg-[#161a20] p-10 md:p-14 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/5 rounded-full blur-3xl" />
-            <div className="coord-marker mb-6 text-amber-400/60">TYPE 02 · BUILDER-OWNER</div>
-            <h3
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-              className="text-2xl text-amber-400 mb-4"
-            >
+          <motion.div variants={fadeUp} className="gradient-border p-10 md:p-12 relative overflow-hidden">
+            <div className="orb-cyan w-40 h-40 -top-10 -right-10 opacity-20" />
+            <div className="tag-label mb-6">Type 02 · Builder-Owner</div>
+            <h3 className="text-2xl font-bold text-glow-cyan mb-4">
               The Owner
             </h3>
-            <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/70 leading-relaxed text-sm">
-              Creates digital assets — websites, tools, content, communities — that attract and serve consumers. Monetizes through advertising, affiliate commissions, digital product sales, and subscriptions. Builds a portfolio that compounds.
+            <p className="text-white/65 leading-relaxed text-sm mb-8">
+              Creates digital assets — websites, tools, content, communities — that attract and serve consumers. Monetizes through advertising, affiliate commissions, digital product sales, and subscriptions.
             </p>
-            <div className="mt-8 space-y-2">
+            <div className="space-y-2.5">
               {["Builds assets that earn while sleeping", "Owns digital real estate", "Revenue compounds over time", "Designs their own freedom"].map((item) => (
-                <div key={item} className="flex items-center gap-3 text-xs text-white/70" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                  <div className="w-1 h-1 rounded-full bg-amber-400" />
+                <div key={item} className="flex items-center gap-3 text-xs text-white/65">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                   {item}
                 </div>
               ))}
@@ -321,118 +275,10 @@ function TwoTypesSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          style={{ fontFamily: "'DM Sans', sans-serif", fontStyle: "italic" }}
-          className="text-center text-white/40 mt-10 text-base max-w-xl mx-auto"
+          className="text-center text-white/35 mt-12 text-base max-w-xl mx-auto italic leading-relaxed"
         >
           "Most people who use the internet are consumers. A small, growing, and increasingly sophisticated population are builder-owners."
         </motion.p>
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-center coord-marker mt-2"
-        >
-          — THE DIGITAL CITY, CH. 1
-        </motion.p>
-      </div>
-    </section>
-  );
-}
-
-function BookSection() {
-  return (
-    <section id="book" className="section-rule py-24">
-      <div className="container">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Book cover */}
-          <motion.div
-            initial={{ opacity: 0, x: -32 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, type: "tween" }}
-            className="relative"
-          >
-            <div className="absolute -inset-4 bg-amber-400/5 rounded-sm blur-2xl" />
-            <img
-              src={BOOK_COVER}
-              alt="The Digital City book cover"
-              className="relative w-full max-w-xs mx-auto lg:mx-0 rounded-sm shadow-2xl shadow-black/60"
-              style={{ transform: "perspective(800px) rotateY(-4deg) rotateX(2deg)" }}
-            />
-            <div className="absolute -bottom-4 -right-4 w-24 h-24 border border-amber-400/20 rounded-sm" />
-          </motion.div>
-
-          {/* Book info */}
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <motion.div variants={fadeUp} className="coord-marker mb-4">STRANDWAY SYSTEMS · 2026</motion.div>
-            <motion.h2
-              variants={fadeUp}
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-              className="text-4xl text-white mb-2"
-            >
-              The Digital City
-            </motion.h2>
-            <motion.p
-              variants={fadeUp}
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 400 }}
-              className="text-xl text-amber-400 mb-6"
-            >
-              How the Internet Economy Really Works
-            </motion.p>
-            <motion.p
-              variants={fadeUp}
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
-              className="text-white/60 leading-relaxed mb-4"
-            >
-              The internet is not a communication tool. It is not an information network. It is an economy — a massive, largely invisible economy that generates trillions of dollars in value every year.
-            </motion.p>
-            <motion.p
-              variants={fadeUp}
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
-              className="text-white/60 leading-relaxed mb-8"
-            >
-              This book gives you the mental map to see it, understand it, and build within it — the same way property owners, infrastructure builders, and capital allocators have always built wealth in physical cities.
-            </motion.p>
-
-            {/* What you'll learn */}
-            <motion.div variants={fadeUp} className="space-y-3 mb-10">
-              {[
-                { icon: Map, text: "Why the internet is structured exactly like a city — and how to use that map" },
-                { icon: Building2, text: "The difference between digital renters and digital owners" },
-                { icon: TrendingUp, text: "How to build assets that compound: content, tools, communities, products" },
-                { icon: Zap, text: "The revenue models that power the internet economy" },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-start gap-3">
-                  <Icon size={14} className="text-amber-400 mt-1 shrink-0" />
-                  <span style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-sm text-white/70">{text}</span>
-                </div>
-              ))}
-            </motion.div>
-
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-              <Link
-                href="/store"
-                className="btn-amber px-6 py-3 text-sm rounded-sm flex items-center gap-2"
-              >
-                Buy the Ebook · $39
-                <ArrowRight size={14} />
-              </Link>
-              <button
-                onClick={() => document.getElementById("email-capture")?.scrollIntoView({ behavior: "smooth" })}
-                className="btn-ghost-amber px-6 py-3 text-sm rounded-sm flex items-center gap-2"
-              >
-                Get Free Chapter
-                <ArrowRight size={14} />
-              </button>
-            </motion.div>
-          </motion.div>
-        </div>
       </div>
     </section>
   );
@@ -442,126 +288,172 @@ function DistrictsSection() {
   const districts = [
     {
       num: "01",
-      name: "Foundation",
-      tagline: "Understand the Digital Economy",
-      desc: "How the digital economy works, what digital assets are, and why this model produces freedom where traditional employment does not.",
+      icon: Cpu,
+      name: "The Intelligent & Autonomous District",
+      tagline: "AI and automation that work without you.",
+      color: "from-cyan-400/20 to-blue-500/10",
+      glow: "cyan",
     },
     {
       num: "02",
-      name: "Architecture",
-      tagline: "Design Your Portfolio",
-      desc: "How to think about a digital asset portfolio at the system level — asset categories, portfolio construction, and compounding mechanics.",
+      icon: Radio,
+      name: "The Attention & Media District",
+      tagline: "Audiences, content, and owned distribution.",
+      color: "from-purple-400/20 to-magenta-500/10",
+      glow: "magenta",
     },
     {
       num: "03",
-      name: "Build",
-      tagline: "Create Digital Assets",
-      desc: "The mechanics of building specific digital asset types — content properties, digital products, email assets, and automated systems.",
+      icon: ShoppingCart,
+      name: "The E-Commerce & Retail District",
+      tagline: "Selling products at internet scale.",
+      color: "from-emerald-400/20 to-cyan-500/10",
+      glow: "cyan",
     },
     {
       num: "04",
-      name: "Systems",
-      tagline: "Automate and Scale",
-      desc: "How to build operational systems that allow your portfolio to scale without proportional increases in active management.",
+      icon: Landmark,
+      name: "The Financial & Fintech District",
+      tagline: "The money layer underneath everything.",
+      color: "from-amber-400/20 to-orange-500/10",
+      glow: "magenta",
     },
     {
       num: "05",
-      name: "Market",
-      tagline: "Distribution and Audience",
-      desc: "How to grow an audience, build owned distribution channels, and create the trust infrastructure that makes all digital assets easier to monetize.",
-    },
-    {
-      num: "06",
-      name: "Capital",
-      tagline: "Revenue and Reinvestment",
-      desc: "How to manage the financial architecture of a digital asset portfolio — revenue tracking, capital allocation, and reinvestment strategy.",
+      icon: Code2,
+      name: "The Software & Enterprise District",
+      tagline: "Tools businesses pay to keep.",
+      color: "from-blue-400/20 to-indigo-500/10",
+      glow: "cyan",
     },
   ];
 
   return (
-    <section id="districts" className="section-rule py-24">
-      <div className="container">
+    <section id="districts" className="section-divider py-28 relative">
+      <div className="orb-magenta w-[400px] h-[400px] top-0 left-0 opacity-10" />
+      <div className="container relative">
         <motion.div
           variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
         >
-          <motion.div variants={fadeUp} className="coord-marker mb-4">THE CURRICULUM · SIX DISTRICTS</motion.div>
-          <motion.h2
-            variants={fadeUp}
-            style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-            className="text-4xl text-white mb-4"
-          >
-            Navigate the City
-          </motion.h2>
-          <motion.p
-            variants={fadeUp}
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
-            className="text-white/50 max-w-xl mb-12 leading-relaxed"
-          >
-            The Digital City curriculum is organized into six Districts — each representing a foundational area of knowledge that a digital asset builder must master.
-          </motion.p>
-
-          {/* District map image */}
-          <motion.div
-            variants={fadeUp}
-            className="mb-12 rounded-sm overflow-hidden border border-white/8"
-          >
-            <img
-              src={DISTRICT_MAP}
-              alt="The Digital City District Map"
-              className="w-full object-cover"
-            />
+          <motion.div variants={fadeUp} className="text-center mb-16">
+            <span className="tag-label mb-4 block">Five Districts · One Economy</span>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-4 tracking-tight">
+              Navigate the City
+            </h2>
+            <p className="text-white/45 max-w-xl mx-auto leading-relaxed">
+              Every digital business belongs to one of five districts. Each represents a distinct economic layer of the internet.
+            </p>
           </motion.div>
 
           {/* District cards */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {districts.map((d, i) => (
               <motion.div
                 key={d.num}
-                variants={fadeUp}
-                custom={i * 0.5}
-                className="district-card p-6 rounded-sm"
+                variants={scaleIn}
+                className={`glass-card p-8 relative overflow-hidden ${i === 4 ? "sm:col-span-2 lg:col-span-1" : ""}`}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <span
-                    style={{ fontFamily: "'Space Mono', monospace", fontWeight: 700 }}
-                    className="text-3xl text-amber-400/30"
-                  >
-                    {d.num}
-                  </span>
-                  <div className="w-1.5 h-1.5 rounded-full bg-amber-400/40 mt-2" />
+                <div className={`absolute inset-0 bg-gradient-to-br ${d.color} opacity-50`} />
+                <div className="relative">
+                  <div className="flex items-start justify-between mb-6">
+                    <d.icon size={24} className={d.glow === "cyan" ? "text-cyan-400" : "text-purple-400"} />
+                    <span className="tag-label text-white/20">{d.num}</span>
+                  </div>
+                  <h3 className="text-white text-lg font-bold mb-2 leading-tight">
+                    {d.name}
+                  </h3>
+                  <p className="text-white/50 text-sm leading-relaxed">
+                    {d.tagline}
+                  </p>
                 </div>
-                <h3
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }}
-                  className="text-white text-lg mb-1"
-                >
-                  {d.name}
-                </h3>
-                <p
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 400 }}
-                  className="text-amber-400/70 text-xs mb-3 uppercase tracking-wider"
-                >
-                  {d.tagline}
-                </p>
-                <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/45 text-sm leading-relaxed">
-                  {d.desc}
-                </p>
               </motion.div>
             ))}
           </div>
-
-          <motion.div variants={fadeUp} className="mt-10 text-center">
-            <button
-              onClick={() => document.getElementById("email-capture-bottom")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-amber px-8 py-3 text-sm rounded-sm inline-flex items-center gap-2"
-            >
-              Access the Full Curriculum
-              <ArrowRight size={14} />
-            </button>
-          </motion.div>
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function BookSection() {
+  return (
+    <section id="book" className="section-divider py-28 relative">
+      <div className="orb-cyan w-[500px] h-[500px] top-1/2 -right-40 opacity-10" />
+      <div className="container relative">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Book visual */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="relative flex justify-center"
+          >
+            <div className="gradient-border p-1 rounded-2xl">
+              <img
+                src={LOGO}
+                alt="The Digital City Book"
+                className="w-full max-w-sm rounded-2xl"
+              />
+            </div>
+          </motion.div>
+
+          {/* Book info */}
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <motion.span variants={fadeUp} className="tag-label mb-4 block">The Book · Digital Economy Guide</motion.span>
+            <motion.h2 variants={fadeUp} className="text-4xl sm:text-5xl font-extrabold text-white mb-4 tracking-tight">
+              The Digital City
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-xl text-cyan-400 font-medium mb-6">
+              How the Internet Economy Really Works
+            </motion.p>
+            <motion.p variants={fadeUp} className="text-white/50 leading-relaxed mb-4">
+              The internet is not a communication tool. It is an economy — a massive, largely invisible economy that generates trillions of dollars in value every year.
+            </motion.p>
+            <motion.p variants={fadeUp} className="text-white/50 leading-relaxed mb-8">
+              This book gives you the mental map to see it, understand it, and build within it — the same way property owners and capital allocators have always built wealth in physical cities.
+            </motion.p>
+
+            <motion.div variants={fadeUp} className="space-y-3 mb-10">
+              {[
+                "Why the internet is structured exactly like a city",
+                "The difference between digital renters and digital owners",
+                "How to build assets that compound over time",
+                "The revenue models that power the internet economy",
+              ].map((text) => (
+                <div key={text} className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-2 shrink-0" />
+                  <span className="text-sm text-white/60">{text}</span>
+                </div>
+              ))}
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
+              <Link
+                href="/store"
+                className="btn-neon px-6 py-3 text-sm flex items-center gap-2"
+              >
+                Buy the Ebook · $39
+                <ArrowRight size={14} />
+              </Link>
+              <button
+                onClick={() => document.getElementById("subscribe")?.scrollIntoView({ behavior: "smooth" })}
+                className="btn-ghost px-6 py-3 text-sm flex items-center gap-2"
+              >
+                Get Free Chapter
+                <Download size={14} />
+              </button>
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -570,54 +462,45 @@ function DistrictsSection() {
 function ResourcesSection() {
   const resources = [
     {
-      type: "EBOOK · $39",
       title: "The Digital City",
-      desc: "The complete guide to understanding the internet economy as a structured system. Learn how to see the digital city, identify where value concentrates, and build assets that generate wealth.",
-      cta: "Buy the Book",
-      badge: "$39",
+      type: "Ebook",
       price: "$39",
+      desc: "The complete guide to understanding the internet economy as a structured system.",
+      cta: "Buy the Book",
       href: "/store",
+      icon: BookOpen,
     },
     {
-      type: "STRATEGIC FRAMEWORK · FREE",
       title: "The Sovereign Digital Entrepreneur",
-      desc: "Strategic frameworks for online monetization in 2026. Master AI orchestration, GEO, and zero-capital business models that scale from a laptop.",
-      cta: "Download Guide",
-      badge: "FREE",
-      price: null,
-      href: "#email-capture-bottom",
-    },
-    {
-      type: "DIGITAL GUIDE · FREE",
-      title: "The Builder's Toolkit",
-      desc: "Every tool, platform, and resource you need to build a digital asset portfolio — with honest assessments of what works, what to skip, and what to buy first.",
+      type: "Strategic Guide",
+      price: "Free",
+      desc: "Strategic frameworks for online monetization in 2026. Master AI orchestration and zero-capital business models.",
       cta: "Download Free",
-      badge: "FREE",
-      price: null,
-      href: "#email-capture-bottom",
+      href: "#subscribe",
+      icon: Sparkles,
     },
     {
-      type: "DIGITAL PRODUCT · $17",
+      title: "The Builder's Toolkit",
+      type: "Resource Guide",
+      price: "Free",
+      desc: "Every tool, platform, and resource you need to build a digital asset portfolio.",
+      cta: "Download Free",
+      href: "#subscribe",
+      icon: Code2,
+    },
+    {
       title: "Portfolio Blueprint",
-      desc: "A step-by-step system for building your first digital asset portfolio — from identifying your knowledge assets to launching your first product and earning your first $1,000/month.",
-      cta: "Get the Blueprint",
-      badge: "$17",
+      type: "Digital Product",
       price: "$17",
+      desc: "A step-by-step system for building your first digital asset portfolio.",
+      cta: "Get Blueprint",
       href: "/store",
-    },
-    {
-      type: "AFFILIATE TOOLS · CURATED",
-      title: "Recommended Stack",
-      desc: "The exact tools the studio uses: Beehiiv for email, Hostinger for hosting, Canva for design, Gumroad for products. Every link is affiliate — every tool is genuine.",
-      cta: "View the Stack",
-      badge: "CURATED",
-      price: null,
-      href: "https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe",
+      icon: Landmark,
     },
   ];
 
   return (
-    <section id="resources" className="section-rule py-24">
+    <section className="section-divider py-28 relative">
       <div className="container">
         <motion.div
           variants={stagger}
@@ -625,66 +508,53 @@ function ResourcesSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-60px" }}
         >
-          <motion.div variants={fadeUp} className="coord-marker mb-4">RESOURCES · TOOLS · GUIDES</motion.div>
-          <motion.h2
-            variants={fadeUp}
-            style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-            className="text-4xl text-white mb-4"
-          >
-            Build Your Stack
-          </motion.h2>
-          <motion.p
-            variants={fadeUp}
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
-            className="text-white/50 max-w-xl mb-12 leading-relaxed"
-          >
-            Guides, frameworks, and tools to accelerate your move from consumer to builder-owner. Only what the studio actually uses.
-          </motion.p>
+          <motion.div variants={fadeUp} className="text-center mb-16">
+            <span className="tag-label mb-4 block">Resources · Guides · Tools</span>
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-4 tracking-tight">
+              Build Your Stack
+            </h2>
+            <p className="text-white/45 max-w-xl mx-auto leading-relaxed">
+              Guides, frameworks, and tools to accelerate your move from consumer to builder-owner.
+            </p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {resources.map((r, i) => (
               <motion.div
                 key={r.title}
-                variants={fadeUp}
-                custom={i * 0.5}
-                className="district-card p-8 rounded-sm flex flex-col"
+                variants={scaleIn}
+                className="glass-card p-6 flex flex-col"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <span className="coord-marker">{r.type}</span>
-                  <span
-                    style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.1em" }}
-                    className={`px-2 py-0.5 rounded-sm ${
-                      r.badge === "FREE" ? "bg-amber-400/15 text-amber-400" :
-                      r.badge === "CURATED" ? "bg-amber-400/10 text-amber-400/70" :
-                      "bg-amber-400/20 text-amber-400 font-bold"
-                    }`}
-                  >
-                    {r.badge}
+                <div className="flex items-center justify-between mb-5">
+                  <r.icon size={20} className="text-cyan-400" />
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
+                    r.price === "Free"
+                      ? "bg-cyan-400/10 text-cyan-400"
+                      : "bg-purple-400/10 text-purple-400"
+                  }`}>
+                    {r.price}
                   </span>
                 </div>
-                <h3
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }}
-                  className="text-white text-xl mb-3"
-                >
-                  {r.title}
-                </h3>
-                <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/45 text-sm leading-relaxed flex-1 mb-6">
-                  {r.desc}
-                </p>
-                <a
-                  href={r.href}
-                  onClick={r.href.startsWith("#") ? (e) => {
-                    e.preventDefault();
-                    document.getElementById(r.href.slice(1))?.scrollIntoView({ behavior: "smooth" });
-                  } : undefined}
-                  target={r.href.startsWith("http") ? "_blank" : undefined}
-                  rel={r.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="text-sm flex items-center gap-2 transition-colors text-amber-400 hover:text-amber-300"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500 }}
-                >
-                  {r.cta}
-                  <ExternalLink size={12} />
-                </a>
+                <span className="tag-label text-white/30 mb-2">{r.type}</span>
+                <h3 className="text-white text-base font-bold mb-2">{r.title}</h3>
+                <p className="text-white/40 text-sm leading-relaxed flex-1 mb-5">{r.desc}</p>
+                {r.href.startsWith("#") ? (
+                  <button
+                    onClick={() => document.getElementById(r.href.slice(1))?.scrollIntoView({ behavior: "smooth" })}
+                    className="text-sm flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
+                  >
+                    {r.cta}
+                    <ArrowRight size={12} />
+                  </button>
+                ) : (
+                  <Link
+                    href={r.href}
+                    className="text-sm flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
+                  >
+                    {r.cta}
+                    <ArrowRight size={12} />
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>
@@ -696,64 +566,35 @@ function ResourcesSection() {
 
 function EmailCaptureSection() {
   return (
-    <section id="email-capture-bottom" className="py-24 relative overflow-hidden">
+    <section className="py-28 relative overflow-hidden">
       {/* Ambient glow */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-96 h-96 bg-amber-400/6 rounded-full blur-3xl" />
-      </div>
+      <div className="orb-cyan w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15" />
+      <div className="orb-magenta w-[400px] h-[400px] bottom-0 left-0 opacity-10" />
 
       <div className="container relative">
         <motion.div
-          variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
+          variants={stagger}
           className="max-w-2xl mx-auto text-center"
         >
-          <motion.div variants={fadeUp} className="coord-marker mb-6 justify-center flex">
-            <Mail size={12} className="mr-2 text-amber-400/60" />
-            THE DIGITAL CITY · DISPATCH
+          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8">
+            <Mail size={12} className="text-cyan-400" />
+            <span className="text-xs font-medium text-white/60">The Digital City Dispatch</span>
           </motion.div>
 
-          <motion.h2
-            variants={fadeUp}
-            style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}
-            className="text-4xl sm:text-5xl text-white mb-4"
-          >
+          <motion.h2 variants={fadeUp} className="text-4xl sm:text-5xl font-extrabold text-white mb-4 tracking-tight">
             Get your plot in<br />
-            <span className="text-amber-400">the city.</span>
+            <span className="text-glow-cyan">the city.</span>
           </motion.h2>
 
-          <motion.p
-            variants={fadeUp}
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
-            className="text-white/50 mb-3 leading-relaxed"
-          >
+          <motion.p variants={fadeUp} className="text-white/45 mb-10 leading-relaxed max-w-lg mx-auto">
             Join the builders who are learning to see the digital economy for what it is — and building their stake in it.
-          </motion.p>
-          <motion.p
-            variants={fadeUp}
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
-            className="text-white/70 mb-10 leading-relaxed"
-          >
-            Get the free Framework Guide, early access to new Districts, and the tools the studio actually uses.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex justify-center">
             <EmailCapture variant="footer" />
-          </motion.div>
-
-          <motion.div variants={fadeUp} className="mt-6 flex flex-wrap justify-center gap-6">
-            {[
-              { icon: BookOpen, label: "Free Framework Guide" },
-              { icon: Map, label: "District Map Access" },
-              { icon: Users, label: "Builder Community" },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2 text-xs text-white/35" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                <Icon size={12} className="text-amber-400/50" />
-                {label}
-              </div>
-            ))}
           </motion.div>
         </motion.div>
       </div>
@@ -761,43 +602,21 @@ function EmailCaptureSection() {
   );
 }
 
-function FooterSection() {
+function Footer() {
   return (
-    <footer className="section-rule py-12">
+    <footer className="border-t border-white/5 py-10">
       <div className="container">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <p
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: "0.06em" }}
-              className="text-sm text-white/70 uppercase tracking-widest mb-1"
-            >
-              The Digital City
-            </p>
-            <p className="coord-marker">AN ENTITY OF STRANDWAY SYSTEMS</p>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <img src={LOGO} alt="The Digital City" className="w-6 h-6 rounded-md" />
+            <span className="text-sm font-medium text-white/40">Strandway Systems · 2026</span>
           </div>
-          <div className="flex flex-wrap gap-6">
-            {[
-              { label: "The Book", href: "#book" },
-              { label: "Districts", href: "#districts" },
-              { label: "Resources", href: "#resources" },
-              { label: "Join", href: "#email-capture-bottom" },
-            ].map(({ label, href }) => (
-              <a
-                key={label}
-                href={href}
-                className="text-xs text-white/30 hover:text-white/60 transition-colors"
-                style={{ fontFamily: "'DM Sans', sans-serif" }}
-              >
-                {label}
-              </a>
-            ))}
+          <div className="flex items-center gap-6">
+            <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Home</Link>
+            <Link href="/store" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Store</Link>
+            <a href="#districts" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Districts</a>
+            <a href="#book" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Book</a>
           </div>
-        </div>
-        <div className="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="coord-marker">© 2026 STRANDWAY SYSTEMS · ALL RIGHTS RESERVED</p>
-          <p className="text-xs text-white/20" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-            Affiliate links may be present. We only recommend what we use.
-          </p>
         </div>
       </div>
     </footer>
@@ -808,35 +627,15 @@ function FooterSection() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#111318] text-white">
+    <div className="min-h-screen bg-[#0a0a1a] text-white relative">
       <NavBar />
       <HeroSection />
       <TwoTypesSection />
-      <BookSection />
       <DistrictsSection />
+      <BookSection />
       <ResourcesSection />
       <EmailCaptureSection />
-      <FooterSection />
-      {/* Mobile sticky CTA bar — only visible on small screens */}
-      <div className="mobile-cta-bar">
-        <a
-          href="https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-amber flex-1 py-3 text-sm rounded-sm text-center font-semibold"
-          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-        >
-          Get Free Access
-        </a>
-        <a
-          href="#book"
-          onClick={(e) => { e.preventDefault(); document.getElementById('book')?.scrollIntoView({ behavior: 'smooth' }); }}
-          className="btn-ghost-amber px-4 py-3 text-sm rounded-sm whitespace-nowrap"
-          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-        >
-          The Book
-        </a>
-      </div>
+      <Footer />
     </div>
   );
 }

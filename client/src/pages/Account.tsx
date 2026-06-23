@@ -1,10 +1,12 @@
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { Download, LogOut, Package, ShoppingBag, User } from "lucide-react";
+import { Download, LogOut, Package, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { Link, useLocation } from "wouter";
 import { useEffect } from "react";
+
+const LOGO = "/manus-storage/digital-city-logo_c47ad8cb.jpg";
 
 export default function Account() {
   const { user, isAuthenticated, loading, logout } = useAuth();
@@ -31,8 +33,8 @@ export default function Account() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#111318] flex items-center justify-center">
-        <div className="animate-pulse text-white/30" style={{ fontFamily: "'Space Mono', monospace" }}>Loading...</div>
+      <div className="min-h-screen bg-[#0a0a1a] flex items-center justify-center">
+        <div className="animate-pulse text-white/30 font-mono text-sm">Loading...</div>
       </div>
     );
   }
@@ -49,50 +51,50 @@ export default function Account() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111318] text-white">
+    <div className="min-h-screen bg-[#0a0a1a] text-white relative">
+      {/* Ambient glow */}
+      <div className="orb-cyan w-[400px] h-[400px] -top-40 -right-40 opacity-15 fixed" />
+      <div className="orb-magenta w-[300px] h-[300px] bottom-20 left-0 opacity-10 fixed" />
+
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-md bg-[#111318]/80">
-        <div className="container flex items-center justify-between h-14">
-          <Link href="/">
-            <span
-              style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: "0.06em" }}
-              className="text-sm text-white/90 uppercase tracking-widest cursor-pointer"
-            >
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 backdrop-blur-xl bg-[#0a0a1a]/70">
+        <div className="container flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-3">
+            <img src={LOGO} alt="The Digital City" className="w-8 h-8 rounded-lg" />
+            <span className="text-sm font-semibold text-white/90 tracking-tight">
               The Digital City
             </span>
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-xs text-white/50 hover:text-white/90 transition-colors" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-              HOME
+            <Link href="/" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+              Home
             </Link>
-            <Link href="/store" className="text-xs text-white/50 hover:text-white/90 transition-colors" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-              STORE
+            <Link href="/store" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+              Store
             </Link>
-            <Link href="/account" className="text-xs text-amber-400 transition-colors" style={{ fontFamily: "'Space Mono', monospace", letterSpacing: "0.08em" }}>
-              MY ACCOUNT
+            <Link href="/account" className="text-xs text-cyan-400 transition-colors font-medium tracking-wide uppercase">
+              Account
             </Link>
           </div>
         </div>
       </nav>
 
-      <section className="pt-28 pb-8">
+      {/* Header */}
+      <section className="pt-32 pb-8 relative">
         <div className="container">
           <div className="flex items-center justify-between">
             <div>
-              <div className="coord-marker mb-4" style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.65rem", letterSpacing: "0.12em", color: "rgba(245,166,35,0.5)" }}>
-                ACCOUNT · DASHBOARD
-              </div>
-              <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }} className="text-3xl text-white mb-2">
-                Welcome back, <span className="text-amber-400">{user?.name || "Builder"}</span>
+              <span className="tag-label mb-4 block">Account · Dashboard</span>
+              <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight">
+                Welcome back, <span className="text-glow-cyan">{user?.name || "Builder"}</span>
               </h1>
-              <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/40 text-sm">
+              <p className="text-white/40 text-sm">
                 {user?.email}
               </p>
             </div>
             <button
               onClick={() => { logout(); setLocation("/"); }}
-              className="flex items-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors"
-              style={{ fontFamily: "'Space Mono', monospace" }}
+              className="flex items-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors font-mono"
             >
               <LogOut size={14} />
               Sign Out
@@ -102,36 +104,35 @@ export default function Account() {
       </section>
 
       {/* Downloads Section */}
-      <section className="pb-12">
+      <section className="pb-12 relative">
         <div className="container">
           <div className="flex items-center gap-3 mb-6">
-            <Download size={18} className="text-amber-400" />
-            <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }} className="text-xl text-white">
+            <Download size={18} className="text-cyan-400" />
+            <h2 className="text-xl font-bold text-white">
               My Downloads
             </h2>
           </div>
 
           {downloadsLoading ? (
             <div className="space-y-3">
-              {[1, 2].map(i => <div key={i} className="h-16 bg-white/5 rounded-sm animate-pulse" />)}
+              {[1, 2].map(i => <div key={i} className="h-16 glass-card animate-pulse" />)}
             </div>
           ) : myDownloads && myDownloads.length > 0 ? (
             <div className="space-y-3">
               {myDownloads.map((dl) => (
-                <div key={dl.id} className="flex items-center justify-between bg-[#161a20] border border-white/8 rounded-sm p-4">
+                <div key={dl.id} className="flex items-center justify-between glass-card p-5">
                   <div>
-                    <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500 }} className="text-white text-sm">
+                    <p className="text-white text-sm font-semibold">
                       {getProductName(dl.productId)}
                     </p>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/30 text-xs mt-1">
+                    <p className="text-white/30 text-xs mt-1">
                       Downloaded {dl.downloadCount} time{dl.downloadCount !== 1 ? "s" : ""}
                     </p>
                   </div>
                   <button
                     onClick={() => handleDownload(dl.productId)}
                     disabled={downloadMutation.isPending}
-                    className="flex items-center gap-2 px-4 py-2 text-xs rounded-sm border border-amber-400/30 text-amber-400 hover:bg-amber-400/10 transition-colors"
-                    style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500 }}
+                    className="flex items-center gap-2 px-4 py-2 text-xs rounded-lg border border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10 transition-all font-medium"
                   >
                     <Download size={12} />
                     Download
@@ -140,11 +141,11 @@ export default function Account() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-[#161a20] border border-white/8 rounded-sm">
+            <div className="text-center py-12 glass-card">
               <Package size={32} className="text-white/20 mx-auto mb-3" />
-              <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/30 text-sm">
+              <p className="text-white/30 text-sm">
                 No downloads yet.{" "}
-                <Link href="/store" className="text-amber-400 hover:underline">
+                <Link href="/store" className="text-cyan-400 hover:underline">
                   Browse the store
                 </Link>
               </p>
@@ -154,46 +155,43 @@ export default function Account() {
       </section>
 
       {/* Orders Section */}
-      <section className="pb-24">
+      <section className="pb-24 relative">
         <div className="container">
           <div className="flex items-center gap-3 mb-6">
-            <ShoppingBag size={18} className="text-amber-400" />
-            <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }} className="text-xl text-white">
+            <ShoppingBag size={18} className="text-cyan-400" />
+            <h2 className="text-xl font-bold text-white">
               Purchase History
             </h2>
           </div>
 
           {ordersLoading ? (
             <div className="space-y-3">
-              {[1, 2].map(i => <div key={i} className="h-16 bg-white/5 rounded-sm animate-pulse" />)}
+              {[1, 2].map(i => <div key={i} className="h-16 glass-card animate-pulse" />)}
             </div>
           ) : myOrders && myOrders.length > 0 ? (
             <div className="space-y-3">
               {myOrders.map((order) => (
-                <div key={order.id} className="flex items-center justify-between bg-[#161a20] border border-white/8 rounded-sm p-4">
+                <div key={order.id} className="flex items-center justify-between glass-card p-5">
                   <div>
-                    <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500 }} className="text-white text-sm">
+                    <p className="text-white text-sm font-semibold">
                       {getProductName(order.productId)}
                     </p>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/30 text-xs mt-1">
+                    <p className="text-white/30 text-xs mt-1">
                       {new Date(order.createdAt).toLocaleDateString()} · ${order.amount}
                     </p>
                   </div>
-                  <span
-                    style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.1em" }}
-                    className="px-2 py-1 rounded-sm bg-green-400/15 text-green-400 uppercase"
-                  >
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-400/10 text-emerald-400 uppercase font-mono">
                     {order.status}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-[#161a20] border border-white/8 rounded-sm">
+            <div className="text-center py-12 glass-card">
               <ShoppingBag size={32} className="text-white/20 mx-auto mb-3" />
-              <p style={{ fontFamily: "'DM Sans', sans-serif" }} className="text-white/30 text-sm">
+              <p className="text-white/30 text-sm">
                 No purchases yet.{" "}
-                <Link href="/store" className="text-amber-400 hover:underline">
+                <Link href="/store" className="text-cyan-400 hover:underline">
                   Browse the store
                 </Link>
               </p>
@@ -203,12 +201,13 @@ export default function Account() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8">
+      <footer className="border-t border-white/5 py-10">
         <div className="container flex items-center justify-between">
-          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: "0.6rem", letterSpacing: "0.12em" }} className="text-white/25 uppercase">
-            © 2026 STRANDWAY SYSTEMS
-          </p>
-          <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+          <div className="flex items-center gap-3">
+            <img src={LOGO} alt="The Digital City" className="w-6 h-6 rounded-md" />
+            <span className="text-sm font-medium text-white/40">Strandway Systems · 2026</span>
+          </div>
+          <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">
             Back to Home
           </Link>
         </div>
