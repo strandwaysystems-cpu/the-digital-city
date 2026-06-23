@@ -105,14 +105,6 @@ describe("products.bySlug", () => {
   });
 });
 
-describe("checkout.createSession", () => {
-  it("requires authentication", async () => {
-    const ctx = createPublicContext();
-    const caller = appRouter.createCaller(ctx);
-    await expect(caller.checkout.createSession({ productId: 1 })).rejects.toThrow();
-  });
-});
-
 describe("orders.myOrders", () => {
   it("requires authentication", async () => {
     const ctx = createPublicContext();

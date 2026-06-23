@@ -207,9 +207,11 @@ export default function Account() {
             <img src={LOGO} alt="The Digital City" className="w-6 h-6 rounded-md" />
             <span className="text-sm font-medium text-white/40">Strandway Systems · 2026</span>
           </div>
-          <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">
-            Back to Home
-          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Privacy</Link>
+            <Link href="/terms" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Terms</Link>
+            <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Home</Link>
+          </div>
         </div>
       </footer>
     </div>

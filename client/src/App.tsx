@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import Store from "./pages/Store";
 import Account from "./pages/Account";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 function Router() {
   return (
@@ -16,6 +18,8 @@ function Router() {
       <Route path={"/store"} component={Store} />
       <Route path={"/account"} component={Account} />
       <Route path={"/checkout/success"} component={CheckoutSuccess} />
+      <Route path={"/privacy"} component={Privacy} />
+      <Route path={"/terms"} component={Terms} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

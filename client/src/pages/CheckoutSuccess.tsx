@@ -39,6 +39,11 @@ export default function CheckoutSuccess() {
         <p className="text-white/25 text-xs mt-12">
           A receipt has been sent to your email. If you have any issues, contact support.
         </p>
+
+        <div className="flex items-center justify-center gap-6 mt-8">
+          <Link href="/privacy" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Privacy</Link>
+          <Link href="/terms" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Terms</Link>
+        </div>
       </div>
     </div>
   );

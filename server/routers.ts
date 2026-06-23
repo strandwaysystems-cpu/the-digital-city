@@ -4,7 +4,6 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getAllProducts, getProductBySlug, getProductById, getFreeProducts, getPaidProducts, createProduct, getUserOrders, getUserDownloads, hasDownloadAccess, incrementDownloadCount, createSubscriber } from "./db";
-import { createCheckoutSession } from "./stripe";
 import { storageGet } from "./storage";
 
 export const appRouter = router({
@@ -38,22 +37,6 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .query(async ({ input }) => {
         return getProductById(input.id);
-      }),
-  }),
-
-  // ─── Checkout ────────────────────────────────────────────────────────────────
-  checkout: router({
-    createSession: protectedProcedure
-      .input(z.object({ productId: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        const result = await createCheckoutSession({
-          productId: input.productId,
-          userId: ctx.user.id,
-          userEmail: ctx.user.email || "",
-          userName: ctx.user.name || "",
-          origin: ctx.req.headers.origin || `${ctx.req.protocol}://${ctx.req.get("host")}`,
-        });
-        return result;
       }),
   }),
 

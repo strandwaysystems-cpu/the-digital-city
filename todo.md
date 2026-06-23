@@ -57,3 +57,16 @@
 - [x] Update Store page to match new design system
 - [x] Update Account page to match new design system
 - [x] Remove Klaviyo env vars (not needed)
+
+## Legal Pages
+- [x] Privacy Policy page (GDPR-compliant, Gumroad-ready)
+- [x] Terms of Service page (digital products, refund policy)
+- [x] Register /privacy and /terms routes in App.tsx
+- [x] Add footer links to Privacy Policy and Terms of Service on all pages
+
+## Gumroad Switch & Stripe Removal
+- [x] Rewrite Store page with hardcoded products (Owner vs Renter Assessment → Gumroad link, others → Coming Soon)
+- [x] Remove Stripe checkout session logic from server
+- [x] Remove Stripe webhook handler from server
+- [x] Update Privacy Policy to reference Gumroad instead of Stripe
+- [x] Update Terms of Service to reference Gumroad instead of Stripe

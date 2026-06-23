@@ -616,6 +616,8 @@ function Footer() {
             <Link href="/store" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Store</Link>
             <a href="#districts" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Districts</a>
             <a href="#book" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Book</a>
+            <Link href="/privacy" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Privacy</Link>
+            <Link href="/terms" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Terms</Link>
           </div>
         </div>
       </div>

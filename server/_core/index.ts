@@ -32,10 +32,6 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  // Stripe webhook MUST be registered BEFORE json body parser
-  const { stripeRouter } = await import("../stripe");
-  app.use("/api/stripe", stripeRouter);
-
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
