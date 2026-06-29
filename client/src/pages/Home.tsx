@@ -8,8 +8,10 @@
 
 import { motion, type Transition, type Variants } from "framer-motion";
 import { useState } from "react";
-import { ArrowRight, BookOpen, ChevronDown, Cpu, Radio, ShoppingCart, Landmark, Code2, Sparkles, Mail, Download } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronDown, Cpu, Radio, ShoppingCart, Landmark, Code2, Sparkles, Mail, Download, CheckCircle } from "lucide-react";
 import { Link } from "wouter";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
 const LOGO = "/manus-storage/digital-city-logo_c47ad8cb.jpg";
@@ -78,18 +80,33 @@ function NavBar() {
 function EmailCapture({ variant = "hero" }: { variant?: "hero" | "footer" }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const subscribeMutation = trpc.subscribe.join.useMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
-    const url = new URL(BEEHIIV_SUBSCRIBE_URL);
-    url.searchParams.set("email", email);
-    url.searchParams.set("utm_source", "website");
-    url.searchParams.set("utm_medium", "organic");
-    url.searchParams.set("utm_campaign", variant === "footer" ? "footer_form" : "hero_form");
-    window.open(url.toString(), "_blank", "noopener,noreferrer");
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    if (!email || isLoading) return;
+    
+    setIsLoading(true);
+    try {
+      await subscribeMutation.mutateAsync({
+        email,
+        source: variant === "footer" ? "footer_form" : "hero_form",
+      });
+      setSubmitted(true);
+      setEmail("");
+      toast.success("Welcome to The Digital City!", {
+        description: "Check your email to confirm.",
+      });
+      setTimeout(() => setSubmitted(false), 4000);
+    } catch (error) {
+      console.error("Subscription error:", error);
+      toast.error("Subscription failed", {
+        description: "Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -105,10 +122,19 @@ function EmailCapture({ variant = "hero" }: { variant?: "hero" | "footer" }) {
         />
         <button
           type="submit"
-          disabled={submitted}
-          className="btn-neon px-6 py-3 text-sm whitespace-nowrap disabled:opacity-50"
+          disabled={submitted || isLoading}
+          className="btn-neon px-6 py-3 text-sm whitespace-nowrap disabled:opacity-50 flex items-center gap-2"
         >
-          {submitted ? "Sent!" : "Join Free"}
+          {submitted ? (
+            <>
+              <CheckCircle size={16} />
+              Confirmed!
+            </>
+          ) : isLoading ? (
+            "Joining..."
+          ) : (
+            "Join Free"
+          )}
         </button>
       </form>
     </div>

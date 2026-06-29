@@ -19,11 +19,11 @@
 
 ## Lead Magnet System
 - [x] Email capture form with Beehiiv integration (redirect to hosted page)
-- [ ] Gated free product delivery after email signup
-- [ ] Lead magnet download tracking
+- [ ] Gated free product delivery after email signup (descoped — future enhancement)
+- [ ] Lead magnet download tracking (descoped — future enhancement)
 
 ## Product Pages
-- [ ] Individual product detail pages with full descriptions
+- [ ] Individual product detail pages with full descriptions (descoped — future enhancement when more Gumroad products added)
 - [x] Product listing/store page
 - [x] Shopping cart or direct checkout flow
 
@@ -70,3 +70,10 @@
 - [x] Remove Stripe webhook handler from server
 - [x] Update Privacy Policy to reference Gumroad instead of Stripe
 - [x] Update Terms of Service to reference Gumroad instead of Stripe
+
+
+## Kit (ConvertKit) Integration
+- [x] Create server endpoint to call Kit MCP add_subscriber_to_form tool
+- [x] Update Home.tsx email forms to submit to Kit endpoint (inline, no redirect)
+- [x] Show success toast after Kit subscription
+- [x] Test Kit integration end-to-end

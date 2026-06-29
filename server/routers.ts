@@ -96,6 +96,24 @@ export const appRouter = router({
           source: input.source || "website",
           leadMagnetId: input.leadMagnetId,
         });
+
+        try {
+          const { execSync } = require('child_process');
+          const kitFormId = 9625620; // Clare form (024b6c4ac2)
+          const mcpInput = JSON.stringify({
+            form_id: kitFormId,
+            email_address: input.email,
+            user_goal: "connect_my_tools",
+            session_id: "web-form-signup",
+          });
+          
+          execSync(`manus-mcp-cli tool call add_subscriber_to_form --server kit --input '${mcpInput.replace(/'/g, "'\\\\''")}' 2>&1`, {
+            stdio: 'pipe',
+          });
+        } catch (error) {
+          console.error('[Kit MCP] Failed to add subscriber:', error);
+        }
+
         return { success: true, isNew: result };
       }),
   }),
