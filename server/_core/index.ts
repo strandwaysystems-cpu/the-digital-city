@@ -28,6 +28,10 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
+// Hosts that assign a port for us (e.g. Hostinger/Passenger) require the
+// app to bind exactly to process.env.PORT, not an auto-selected fallback.
+const usesAssignedPort = !!process.env.PORT;
+
 async function startServer() {
   const app = express();
   const server = createServer(app);
@@ -56,7 +60,7 @@ async function startServer() {
   }
 
   const preferredPort = parseInt(process.env.PORT || "3000");
-  const port = await findAvailablePort(preferredPort);
+  const port = usesAssignedPort ? preferredPort : await findAvailablePort(preferredPort);
 
   if (port !== preferredPort) {
     console.log(`Port ${preferredPort} is busy, using port ${port} instead`);

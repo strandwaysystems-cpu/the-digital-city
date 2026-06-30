@@ -1,10 +1,8 @@
 import { Link } from "wouter";
 import { ExternalLink, Clock, Download, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
 
-const LOGO = "/manus-storage/digital-city-logo_c47ad8cb.jpg";
+const LOGO = "/logo.jpg";
 const GUMROAD_ASSESSMENT_URL = "https://buildyourdigitalcity.gumroad.com/l/owner-vs-renter";
 
 interface Product {
@@ -62,14 +60,7 @@ const PRODUCTS: Product[] = [
 ];
 
 export default function Store() {
-  const { isAuthenticated } = useAuth();
-
   const handleFreeDownload = () => {
-    if (!isAuthenticated) {
-      toast.info("Please sign in to download");
-      window.location.href = getLoginUrl("/store");
-      return;
-    }
     toast.info("Downloading...");
   };
 
@@ -95,15 +86,6 @@ export default function Store() {
             <Link href="/store" className="text-xs text-cyan-400 transition-colors hidden sm:block font-medium tracking-wide uppercase">
               Store
             </Link>
-            {isAuthenticated ? (
-              <Link href="/account" className="text-xs text-white/40 hover:text-white/90 transition-colors font-medium tracking-wide uppercase">
-                Account
-              </Link>
-            ) : (
-              <a href={getLoginUrl("/store")} className="btn-neon px-5 py-2 text-xs font-semibold">
-                Sign In
-              </a>
-            )}
           </div>
         </div>
       </nav>

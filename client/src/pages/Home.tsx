@@ -14,7 +14,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
-const LOGO = "/manus-storage/digital-city-logo_c47ad8cb.jpg";
+const LOGO = "/logo.jpg";
 
 // ─── Beehiiv Integration ──────────────────────────────────────────────────────
 const BEEHIIV_SUBSCRIBE_URL = "https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe";

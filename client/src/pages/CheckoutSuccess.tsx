@@ -22,7 +22,7 @@ export default function CheckoutSuccess() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/account">
+          <Link href="/store">
             <button className="btn-neon flex items-center justify-center gap-2 px-6 py-3 text-sm">
               <Download size={14} />
               Go to Downloads

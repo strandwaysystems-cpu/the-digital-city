@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 
-const LOGO = "/manus-storage/digital-city-logo_c47ad8cb.jpg";
+const LOGO = "/logo.jpg";
 
 export default function Terms() {
   return (

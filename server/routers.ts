@@ -98,20 +98,26 @@ export const appRouter = router({
         });
 
         try {
-          const { execSync } = require('child_process');
-          const kitFormId = 9625620; // Clare form (024b6c4ac2)
-          const mcpInput = JSON.stringify({
-            form_id: kitFormId,
-            email_address: input.email,
-            user_goal: "connect_my_tools",
-            session_id: "web-form-signup",
-          });
-          
-          execSync(`manus-mcp-cli tool call add_subscriber_to_form --server kit --input '${mcpInput.replace(/'/g, "'\\\\''")}' 2>&1`, {
-            stdio: 'pipe',
-          });
+          const kitApiKey = process.env.KIT_API_KEY;
+          const kitFormId = process.env.KIT_FORM_ID || "9625620";
+          if (!kitApiKey) {
+            console.warn("[Kit] KIT_API_KEY not set, skipping subscriber sync");
+          } else {
+            const resp = await fetch(`https://api.kit.com/v4/forms/${kitFormId}/subscribers`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Kit-Api-Key": kitApiKey,
+              },
+              body: JSON.stringify({ email_address: input.email }),
+            });
+            if (!resp.ok) {
+              const body = await resp.text().catch(() => "");
+              console.error(`[Kit] subscribe failed: ${resp.status} ${body}`);
+            }
+          }
         } catch (error) {
-          console.error('[Kit MCP] Failed to add subscriber:', error);
+          console.error("[Kit] Failed to add subscriber:", error);
         }
 
         return { success: true, isNew: result };
