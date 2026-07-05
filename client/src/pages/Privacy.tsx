@@ -120,7 +120,7 @@ export default function Privacy() {
               <p className="mb-4">We do not sell your personal data. We share information only with the following categories of service providers:</p>
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li><span className="text-white/90 font-medium">Gumroad:</span> Payment processing and digital product delivery</li>
-                <li><span className="text-white/90 font-medium">Beehiiv:</span> Email newsletter delivery (when you subscribe)</li>
+                <li><span className="text-white/90 font-medium">Kit (kit.com):</span> Email newsletter delivery (when you subscribe)</li>
                 <li><span className="text-white/90 font-medium">Cloud Infrastructure:</span> Hosting and content delivery</li>
                 <li><span className="text-white/90 font-medium">Analytics:</span> Aggregated, anonymized usage data for site improvement</li>
               </ul>

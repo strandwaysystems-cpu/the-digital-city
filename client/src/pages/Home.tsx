@@ -1,23 +1,41 @@
 /**
- * THE DIGITAL CITY — Home Landing Page v2
+ * THE DIGITAL CITY — Home Landing Page v3
  * Design: Premium Glassmorphism / Neon City
  * Palette: Deep navy (#0a0a1a) + Cyan neon + Magenta neon
  * Font: Inter (display + body) + JetBrains Mono (labels)
- * Goal: Email capture → Book sale → Digital products → Affiliate
+ * Goal: Email capture (Kit) → Book sale → Digital products → Affiliate
+ *
+ * Email capture flows through the tRPC subscribe mutation, which syncs
+ * subscribers to Kit (form KIT_FORM_ID) server-side. The product showcase
+ * renders from the live catalog (trpc.products.list) so it stays current
+ * as products are added or removed, with a curated fallback when the
+ * catalog is empty or unreachable.
  */
 
 import { motion, type Transition, type Variants } from "framer-motion";
 import { useState } from "react";
-import { ArrowRight, BookOpen, ChevronDown, Cpu, Radio, ShoppingCart, Landmark, Code2, Sparkles, Mail, Download, CheckCircle } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  ChevronDown,
+  Cpu,
+  Radio,
+  ShoppingCart,
+  Landmark,
+  Code2,
+  Sparkles,
+  Mail,
+  Download,
+  CheckCircle,
+  ExternalLink,
+  type LucideIcon,
+} from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 // ─── Asset URLs ───────────────────────────────────────────────────────────────
 const LOGO = "/logo.jpg";
-
-// ─── Beehiiv Integration ──────────────────────────────────────────────────────
-const BEEHIIV_SUBSCRIBE_URL = "https://digitalcity-newsletter-e176d1.beehiiv.com/subscribe";
 
 // ─── Animation Variants ───────────────────────────────────────────────────────
 const fadeUp: Variants = {
@@ -42,6 +60,93 @@ const scaleIn: Variants = {
     transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } as Transition,
   },
 };
+
+// ─── Live catalog ─────────────────────────────────────────────────────────────
+
+const PRODUCT_TYPE_META: Record<string, { label: string; icon: LucideIcon }> = {
+  ebook: { label: "Ebook", icon: BookOpen },
+  guide: { label: "Strategic Guide", icon: Sparkles },
+  blueprint: { label: "Blueprint", icon: Landmark },
+  toolkit: { label: "Toolkit", icon: Code2 },
+  course: { label: "Course", icon: Cpu },
+};
+
+interface DisplayProduct {
+  key: string;
+  name: string;
+  typeLabel: string;
+  icon: LucideIcon;
+  price: string;
+  isFree: boolean;
+  desc: string;
+  href: string;
+  external?: boolean;
+  cta: string;
+}
+
+/** Shown while the catalog loads, or if it's empty/unreachable. */
+const FALLBACK_PRODUCTS: DisplayProduct[] = [
+  {
+    key: "owner-vs-renter",
+    name: "Owner vs Renter Assessment",
+    typeLabel: "Assessment",
+    icon: Sparkles,
+    price: "$9",
+    isFree: false,
+    desc: "Discover where you stand in the digital economy — building assets that compound, or renting attention from platforms that do.",
+    href: "https://buildyourdigitalcity.gumroad.com/l/owner-vs-renter",
+    external: true,
+    cta: "Get It · $9",
+  },
+  {
+    key: "digital-city-ebook",
+    name: "The Digital City",
+    typeLabel: "Ebook",
+    icon: BookOpen,
+    price: "$39",
+    isFree: false,
+    desc: "The complete guide to understanding the internet economy and building digital assets that compound.",
+    href: "/store",
+    cta: "Buy the Book",
+  },
+  {
+    key: "sovereign-entrepreneur",
+    name: "The Sovereign Digital Entrepreneur",
+    typeLabel: "Strategic Guide",
+    icon: Sparkles,
+    price: "Free",
+    isFree: true,
+    desc: "Strategic frameworks for online monetization in 2026. Master AI orchestration and zero-capital business models.",
+    href: "#subscribe",
+    cta: "Download Free",
+  },
+  {
+    key: "portfolio-blueprint",
+    name: "Portfolio Blueprint",
+    typeLabel: "Blueprint",
+    icon: Landmark,
+    price: "$17",
+    isFree: false,
+    desc: "A step-by-step system for building your first digital asset portfolio.",
+    href: "/store",
+    cta: "Get Blueprint",
+  },
+];
+
+function formatPrice(price: string): string {
+  const value = Number.parseFloat(price);
+  if (!Number.isFinite(value) || value <= 0) return "Free";
+  return Number.isInteger(value) ? `$${value}` : `$${value.toFixed(2)}`;
+}
+
+/** Live catalog, shared between sections (react-query dedupes the fetch). */
+function useCatalog() {
+  return trpc.products.list.useQuery(undefined, {
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -80,32 +185,34 @@ function NavBar() {
 function EmailCapture({ variant = "hero" }: { variant?: "hero" | "footer" }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const subscribeMutation = trpc.subscribe.join.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || isLoading) return;
-    
-    setIsLoading(true);
+    if (!email || subscribeMutation.isPending) return;
+
     try {
-      await subscribeMutation.mutateAsync({
+      const result = await subscribeMutation.mutateAsync({
         email,
         source: variant === "footer" ? "footer_form" : "hero_form",
       });
       setSubmitted(true);
       setEmail("");
-      toast.success("Welcome to The Digital City!", {
-        description: "Check your email to confirm.",
-      });
+      if (result.isNew) {
+        toast.success("Welcome to The Digital City!", {
+          description: "Check your email to confirm and grab your free guide.",
+        });
+      } else {
+        toast.info("You're already on the list!", {
+          description: "Check your inbox — your guide is waiting there.",
+        });
+      }
       setTimeout(() => setSubmitted(false), 4000);
     } catch (error) {
       console.error("Subscription error:", error);
       toast.error("Subscription failed", {
         description: "Please try again.",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -117,12 +224,14 @@ function EmailCapture({ variant = "hero" }: { variant?: "hero" | "footer" }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your email"
+          aria-label="Email address"
+          autoComplete="email"
           required
           className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all"
         />
         <button
           type="submit"
-          disabled={submitted || isLoading}
+          disabled={submitted || subscribeMutation.isPending}
           className="btn-neon px-6 py-3 text-sm whitespace-nowrap disabled:opacity-50 flex items-center gap-2"
         >
           {submitted ? (
@@ -130,7 +239,7 @@ function EmailCapture({ variant = "hero" }: { variant?: "hero" | "footer" }) {
               <CheckCircle size={16} />
               Confirmed!
             </>
-          ) : isLoading ? (
+          ) : subscribeMutation.isPending ? (
             "Joining..."
           ) : (
             "Join Free"
@@ -208,6 +317,13 @@ function HeroSection() {
             <p className="text-xs text-white/25 font-medium">
               Free framework guide. No spam, ever.
             </p>
+            <Link
+              href="/store"
+              className="btn-ghost px-6 py-2.5 text-xs flex items-center gap-2 font-semibold tracking-wide uppercase"
+            >
+              <ShoppingCart size={14} />
+              Browse the Store
+            </Link>
           </motion.div>
 
           {/* Logo showcase */}
@@ -405,6 +521,10 @@ function DistrictsSection() {
 }
 
 function BookSection() {
+  const { data: catalog } = useCatalog();
+  const flagship = catalog?.find((p) => p.productType === "ebook" && !p.isFree);
+  const flagshipPrice = flagship ? formatPrice(flagship.price) : "$39";
+
   return (
     <section id="book" className="section-divider py-28 relative">
       <div className="orb-cyan w-[500px] h-[500px] top-1/2 -right-40 opacity-10" />
@@ -420,7 +540,7 @@ function BookSection() {
           >
             <div className="gradient-border p-1 rounded-2xl">
               <img
-                src={LOGO}
+                src={flagship?.coverImageUrl || LOGO}
                 alt="The Digital City Book"
                 className="w-full max-w-sm rounded-2xl"
               />
@@ -467,7 +587,7 @@ function BookSection() {
                 href="/store"
                 className="btn-neon px-6 py-3 text-sm flex items-center gap-2"
               >
-                Buy the Ebook · $39
+                Buy the Ebook · {flagshipPrice}
                 <ArrowRight size={14} />
               </Link>
               <button
@@ -485,48 +605,86 @@ function BookSection() {
   );
 }
 
-function ResourcesSection() {
-  const resources = [
-    {
-      title: "The Digital City",
-      type: "Ebook",
-      price: "$39",
-      desc: "The complete guide to understanding the internet economy as a structured system.",
-      cta: "Buy the Book",
-      href: "/store",
-      icon: BookOpen,
-    },
-    {
-      title: "The Sovereign Digital Entrepreneur",
-      type: "Strategic Guide",
-      price: "Free",
-      desc: "Strategic frameworks for online monetization in 2026. Master AI orchestration and zero-capital business models.",
-      cta: "Download Free",
-      href: "#subscribe",
-      icon: Sparkles,
-    },
-    {
-      title: "The Builder's Toolkit",
-      type: "Resource Guide",
-      price: "Free",
-      desc: "Every tool, platform, and resource you need to build a digital asset portfolio.",
-      cta: "Download Free",
-      href: "#subscribe",
-      icon: Code2,
-    },
-    {
-      title: "Portfolio Blueprint",
-      type: "Digital Product",
-      price: "$17",
-      desc: "A step-by-step system for building your first digital asset portfolio.",
-      cta: "Get Blueprint",
-      href: "/store",
-      icon: Landmark,
-    },
-  ];
+function ProductCard({ product }: { product: DisplayProduct }) {
+  const Icon = product.icon;
+  const cta = (
+    <>
+      {product.cta}
+      {product.external ? <ExternalLink size={12} /> : <ArrowRight size={12} />}
+    </>
+  );
+  const ctaClass =
+    "text-sm flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium";
 
   return (
-    <section className="section-divider py-28 relative">
+    <motion.div variants={scaleIn} className="glass-card p-6 flex flex-col">
+      <div className="flex items-center justify-between mb-5">
+        <Icon size={20} className="text-cyan-400" />
+        <span
+          className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
+            product.isFree
+              ? "bg-cyan-400/10 text-cyan-400"
+              : "bg-purple-400/10 text-purple-400"
+          }`}
+        >
+          {product.price}
+        </span>
+      </div>
+      <span className="tag-label text-white/30 mb-2">{product.typeLabel}</span>
+      <h3 className="text-white text-base font-bold mb-2">{product.name}</h3>
+      <p className="text-white/40 text-sm leading-relaxed flex-1 mb-5">{product.desc}</p>
+      {product.external ? (
+        <a href={product.href} target="_blank" rel="noopener noreferrer" className={ctaClass}>
+          {cta}
+        </a>
+      ) : product.href.startsWith("#") ? (
+        <button
+          onClick={() =>
+            document.getElementById(product.href.slice(1))?.scrollIntoView({ behavior: "smooth" })
+          }
+          className={ctaClass}
+        >
+          {cta}
+        </button>
+      ) : (
+        <Link href={product.href} className={ctaClass}>
+          {cta}
+        </Link>
+      )}
+    </motion.div>
+  );
+}
+
+function ProductsSection() {
+  const { data: catalog, isLoading } = useCatalog();
+
+  // Free products funnel through the email opt-in (lead magnet); paid ones
+  // go to the store. Falls back to the curated list when the catalog is
+  // empty or unreachable so the section never renders blank.
+  const products: DisplayProduct[] =
+    catalog && catalog.length > 0
+      ? catalog.map((p) => {
+          const meta = PRODUCT_TYPE_META[p.productType] ?? {
+            label: "Digital Product",
+            icon: Sparkles,
+          };
+          const isFree = p.isFree || Number.parseFloat(p.price) <= 0;
+          return {
+            key: p.slug,
+            name: p.name,
+            typeLabel: meta.label,
+            icon: meta.icon,
+            price: isFree ? "Free" : formatPrice(p.price),
+            isFree,
+            desc: p.shortDescription || p.description || "",
+            href: isFree ? "#subscribe" : "/store",
+            cta: isFree ? "Download Free" : `Get It · ${formatPrice(p.price)}`,
+          };
+        })
+      : FALLBACK_PRODUCTS;
+
+  return (
+    <section id="products" className="section-divider py-28 relative">
       <div className="container">
         <motion.div
           variants={stagger}
@@ -544,46 +702,31 @@ function ResourcesSection() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {resources.map((r, i) => (
-              <motion.div
-                key={r.title}
-                variants={scaleIn}
-                className="glass-card p-6 flex flex-col"
-              >
-                <div className="flex items-center justify-between mb-5">
-                  <r.icon size={20} className="text-cyan-400" />
-                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
-                    r.price === "Free"
-                      ? "bg-cyan-400/10 text-cyan-400"
-                      : "bg-purple-400/10 text-purple-400"
-                  }`}>
-                    {r.price}
-                  </span>
+          {isLoading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5" aria-hidden="true">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="glass-card p-6 h-56 animate-pulse">
+                  <div className="w-8 h-8 rounded-lg bg-white/5 mb-5" />
+                  <div className="h-3 w-1/3 rounded bg-white/5 mb-3" />
+                  <div className="h-4 w-2/3 rounded bg-white/10 mb-3" />
+                  <div className="h-3 w-full rounded bg-white/5" />
                 </div>
-                <span className="tag-label text-white/30 mb-2">{r.type}</span>
-                <h3 className="text-white text-base font-bold mb-2">{r.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed flex-1 mb-5">{r.desc}</p>
-                {r.href.startsWith("#") ? (
-                  <button
-                    onClick={() => document.getElementById(r.href.slice(1))?.scrollIntoView({ behavior: "smooth" })}
-                    className="text-sm flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
-                  >
-                    {r.cta}
-                    <ArrowRight size={12} />
-                  </button>
-                ) : (
-                  <Link
-                    href={r.href}
-                    className="text-sm flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
-                  >
-                    {r.cta}
-                    <ArrowRight size={12} />
-                  </Link>
-                )}
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {products.map((p) => (
+                <ProductCard key={p.key} product={p} />
+              ))}
+            </div>
+          )}
+
+          <motion.div variants={fadeUp} className="flex justify-center mt-12">
+            <Link href="/store" className="btn-neon px-8 py-3 text-sm flex items-center gap-2">
+              Visit the Full Store
+              <ArrowRight size={14} />
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>
@@ -616,7 +759,7 @@ function EmailCaptureSection() {
           </motion.h2>
 
           <motion.p variants={fadeUp} className="text-white/45 mb-10 leading-relaxed max-w-lg mx-auto">
-            Join the builders who are learning to see the digital economy for what it is — and building their stake in it.
+            Join the builders who are learning to see the digital economy for what it is — and building their stake in it. Get the free framework guide when you join.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex justify-center">
@@ -661,7 +804,7 @@ export default function Home() {
       <TwoTypesSection />
       <DistrictsSection />
       <BookSection />
-      <ResourcesSection />
+      <ProductsSection />
       <EmailCaptureSection />
       <Footer />
     </div>
