@@ -150,13 +150,25 @@ function formatPrice(price: string): string {
   return Number.isInteger(value) ? `$${value}` : `$${value.toFixed(2)}`;
 }
 
-/** Live catalog, shared between sections (react-query dedupes the fetch). */
-function useCatalog() {
-  return trpc.products.list.useQuery(undefined, {
+/**
+ * Storefront data shared between sections (react-query dedupes the fetches).
+ * Same source chain as the Store page so both always match: live Gumroad
+ * catalog first, the site DB catalog only if Gumroad is empty/unavailable,
+ * then the static fallback list.
+ */
+function useStorefront() {
+  const gumroad = trpc.gumroad.products.useQuery(undefined, {
     retry: 1,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+  const db = trpc.products.list.useQuery(undefined, {
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    enabled: gumroad.isSuccess ? gumroad.data.length === 0 : gumroad.isError,
+  });
+  return { gumroad, db };
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -532,9 +544,13 @@ function DistrictsSection() {
 }
 
 function BookSection() {
-  const { data: catalog } = useCatalog();
-  const flagship = catalog?.find((p) => p.productType === "ebook" && !p.isFree);
-  const flagshipPrice = flagship ? formatPrice(flagship.price) : "$39";
+  const { gumroad, db } = useStorefront();
+  const liveFlagship = gumroad.data?.find(
+    (p) => p.shortUrl.includes("/l/e-book") || (!p.isFree && /e-?book/i.test(p.name)),
+  );
+  const dbFlagship = db.data?.find((p) => p.productType === "ebook" && !p.isFree);
+  const flagshipPrice = liveFlagship?.formattedPrice ?? (dbFlagship ? formatPrice(dbFlagship.price) : "$39");
+  const flagshipCover = liveFlagship?.thumbnailUrl || dbFlagship?.coverImageUrl || LOGO;
 
   return (
     <section id="book" className="section-divider py-28 relative">
@@ -551,7 +567,7 @@ function BookSection() {
           >
             <div className="gradient-border p-1 rounded-2xl">
               <img
-                src={flagship?.coverImageUrl || LOGO}
+                src={flagshipCover}
                 alt="The Digital City Book"
                 className="w-full max-w-sm rounded-2xl"
               />
@@ -594,13 +610,23 @@ function BookSection() {
             </motion.div>
 
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-              <Link
-                href="/store"
-                className="btn-neon px-6 py-3 text-sm flex items-center gap-2"
-              >
-                Buy the Ebook · {flagshipPrice}
-                <ArrowRight size={14} />
-              </Link>
+              {liveFlagship ? (
+                <a
+                  href={liveFlagship.shortUrl}
+                  className="gumroad-button btn-neon px-6 py-3 text-sm flex items-center gap-2"
+                >
+                  Buy the Ebook · {flagshipPrice}
+                  <ArrowRight size={14} />
+                </a>
+              ) : (
+                <Link
+                  href="/store"
+                  className="btn-neon px-6 py-3 text-sm flex items-center gap-2"
+                >
+                  Buy the Ebook · {flagshipPrice}
+                  <ArrowRight size={14} />
+                </Link>
+              )}
               <button
                 onClick={() => document.getElementById("subscribe")?.scrollIntoView({ behavior: "smooth" })}
                 className="btn-ghost px-6 py-3 text-sm flex items-center gap-2"
@@ -667,14 +693,18 @@ function ProductCard({ product }: { product: DisplayProduct }) {
 }
 
 function ProductsSection() {
-  const { data: catalog, isLoading } = useCatalog();
+  const { gumroad, db } = useStorefront();
+  const liveProducts = gumroad.data ?? [];
+  const useLive = liveProducts.length > 0;
+  const isLoading = gumroad.isLoading || (!useLive && db.isLoading);
 
-  // Free products funnel through the email opt-in (lead magnet); paid ones
-  // go to the store. Falls back to the curated list when the catalog is
-  // empty or unreachable so the section never renders blank.
+  // Fallback path (Gumroad empty/unreachable): the site DB catalog, where
+  // free products funnel through the email opt-in (lead magnet) and paid
+  // ones go to the store; then the curated static list, so the section
+  // never renders blank.
   const products: DisplayProduct[] =
-    catalog && catalog.length > 0
-      ? catalog.map((p) => {
+    db.data && db.data.length > 0
+      ? db.data.map((p) => {
           const meta = PRODUCT_TYPE_META[p.productType] ?? {
             label: "Digital Product",
             icon: Sparkles,
@@ -722,6 +752,38 @@ function ProductsSection() {
                   <div className="h-4 w-2/3 rounded bg-white/10 mb-3" />
                   <div className="h-3 w-full rounded bg-white/5" />
                 </div>
+              ))}
+            </div>
+          ) : useLive ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {liveProducts.map((p) => (
+                <motion.div key={p.id} variants={scaleIn} className="glass-card p-6 flex flex-col">
+                  <div className="flex items-center justify-between mb-5">
+                    <div
+                      aria-hidden="true"
+                      className="w-9 h-9 rounded-lg flex items-center justify-center text-base font-extrabold text-white/85 bg-gradient-to-br from-cyan-400/30 via-[#0a0a1a]/60 to-fuchsia-500/30 border border-white/10"
+                      style={{ textShadow: "0 0 14px rgba(34,211,238,0.7)" }}
+                    >
+                      {p.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span
+                      className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
+                        p.isFree ? "bg-cyan-400/10 text-cyan-400" : "bg-purple-400/10 text-purple-400"
+                      }`}
+                    >
+                      {p.formattedPrice}
+                    </span>
+                  </div>
+                  <h3 className="text-white text-base font-bold mb-2">{p.name}</h3>
+                  <p className="text-white/40 text-sm leading-relaxed flex-1 mb-5">{p.summary}</p>
+                  <a
+                    href={p.shortUrl}
+                    className="gumroad-button text-sm flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
+                  >
+                    {p.isFree ? "Get It Free" : `Get It · ${p.formattedPrice}`}
+                    <ArrowRight size={12} />
+                  </a>
+                </motion.div>
               ))}
             </div>
           ) : (
