@@ -131,6 +131,17 @@ const FALLBACK_PRODUCTS: DisplayProduct[] = [
     href: "/store",
     cta: "Get Blueprint",
   },
+  {
+    key: "builders-toolkit",
+    name: "The Builder's Toolkit",
+    typeLabel: "Toolkit",
+    icon: Code2,
+    price: "Free",
+    isFree: true,
+    desc: "Every tool you need to build a digital asset portfolio — honest assessments, real recommendations.",
+    href: "#subscribe",
+    cta: "Download Free",
+  },
 ];
 
 function formatPrice(price: string): string {
