@@ -56,6 +56,13 @@
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
+  /* .page carries inline dark-brand styles as a fallback in case this
+     stylesheet is stripped by the sanitizer; when the stylesheet is
+     active these !important rules restore theme awareness. */
+  .page {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+  }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; position: relative; }
 
   /* Ambient neon orbs + grid (pure CSS, no images) */
@@ -177,9 +184,10 @@
   }
 </style>
 
+<div class="page" style="background:#0a0a1a;color:#ffffff;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;line-height:1.6;">
 <header>
-  <div class="orb orb-cyan" style="width:480px;height:480px;top:-200px;left:-140px;"></div>
-  <div class="orb orb-magenta" style="width:380px;height:380px;top:40px;right:-160px;"></div>
+  <div class="orb orb-cyan" style="position:absolute;pointer-events:none;width:480px;height:480px;top:-200px;left:-140px;"></div>
+  <div class="orb orb-magenta" style="position:absolute;pointer-events:none;width:380px;height:380px;top:40px;right:-160px;"></div>
   <div class="grid-overlay"></div>
   <div class="wrap">
     <div class="avatar" aria-hidden="true">🏙️</div>
@@ -203,18 +211,62 @@
 </header>
 
 <section id="products" aria-labelledby="products-heading">
-  <div class="orb orb-magenta" style="width:360px;height:360px;bottom:-160px;left:-140px;"></div>
+  <div class="orb orb-magenta" style="position:absolute;pointer-events:none;width:360px;height:360px;bottom:-160px;left:-140px;"></div>
   <div class="wrap">
     <div class="section-head">
       <p class="tag-label">Resources · Guides · Tools</p>
       <h2 id="products-heading">Build Your Stack</h2>
       <p>Everything you need to move from consumer to builder-owner.</p>
     </div>
-    <div class="grid" id="product-grid"></div>
-    <p class="empty-note" id="products-empty" hidden>
-      New products are on the way — meanwhile, grab the free framework guide at
-      <a href="https://buildyourdigitalcity.com" rel="noopener" style="color:var(--cyan);">buildyourdigitalcity.com</a>.
-    </p>
+    <!-- Static cards render even if scripts are stripped; the script below
+         replaces them with the live injected catalog when it has products. -->
+    <div class="grid" id="product-grid">
+      <a class="card" href="https://buildyourdigitalcity.gumroad.com/l/owner-vs-renter"
+         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
+        <div class="card-body" style="padding:0;">
+          <div class="card-meta"><span class="type-badge">Assessment</span><span class="price-badge price-paid">$9</span></div>
+          <h3 class="card-title">Owner vs Renter Assessment</h3>
+          <p class="card-desc">Discover where you stand in the digital economy — building assets that compound, or renting attention from platforms that do.</p>
+          <span class="card-cta">View product →</span>
+        </div>
+      </a>
+      <a class="card" href="https://buildyourdigitalcity.com/store"
+         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
+        <div class="card-body" style="padding:0;">
+          <div class="card-meta"><span class="type-badge">Ebook</span><span class="price-badge price-paid">$39</span></div>
+          <h3 class="card-title">The Digital City</h3>
+          <p class="card-desc">The complete guide to understanding the internet economy and building digital assets that compound.</p>
+          <span class="card-cta">View on the website →</span>
+        </div>
+      </a>
+      <a class="card" href="https://buildyourdigitalcity.com/#subscribe"
+         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
+        <div class="card-body" style="padding:0;">
+          <div class="card-meta"><span class="type-badge">Strategic Guide</span><span class="price-badge price-free">Free</span></div>
+          <h3 class="card-title">The Sovereign Digital Entrepreneur</h3>
+          <p class="card-desc">Strategic frameworks for online monetization in 2026 — AI orchestration and zero-capital business models.</p>
+          <span class="card-cta">Get it free →</span>
+        </div>
+      </a>
+      <a class="card" href="https://buildyourdigitalcity.com/#subscribe"
+         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
+        <div class="card-body" style="padding:0;">
+          <div class="card-meta"><span class="type-badge">Toolkit</span><span class="price-badge price-free">Free</span></div>
+          <h3 class="card-title">The Builder's Toolkit</h3>
+          <p class="card-desc">Every tool you need to build a digital asset portfolio — honest assessments, real recommendations.</p>
+          <span class="card-cta">Get it free →</span>
+        </div>
+      </a>
+      <a class="card" href="https://buildyourdigitalcity.com/store"
+         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
+        <div class="card-body" style="padding:0;">
+          <div class="card-meta"><span class="type-badge">Blueprint</span><span class="price-badge price-paid">$17</span></div>
+          <h3 class="card-title">Portfolio Blueprint</h3>
+          <p class="card-desc">A step-by-step system for building your first digital asset portfolio.</p>
+          <span class="card-cta">View on the website →</span>
+        </div>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -231,7 +283,7 @@
 <section aria-labelledby="bridge-heading">
   <div class="wrap">
     <div class="bridge">
-      <div class="orb orb-cyan" style="width:300px;height:300px;top:-120px;right:-100px;"></div>
+      <div class="orb orb-cyan" style="position:absolute;pointer-events:none;width:300px;height:300px;top:-120px;right:-100px;"></div>
       <p class="tag-label">Free Framework Guide</p>
       <h2 id="bridge-heading" style="margin-top:10px;">Get your plot in <span class="glow-cyan">the city.</span></h2>
       <p>
@@ -252,6 +304,7 @@
     <a href="https://buildyourdigitalcity.com" rel="noopener">buildyourdigitalcity.com</a>
   </div>
 </footer>
+</div>
 
 <script id="gumroad-data" type="application/json">
   { "products": [], "posts": [], "pages": [] }
@@ -306,12 +359,13 @@
     }
 
     // ── Products ──────────────────────────────────────────────────────────
+    // Static fallback cards are already in the grid; only replace them when
+    // the injected catalog actually has products.
     var grid = document.getElementById("product-grid");
     var products = Array.isArray(data.products) ? data.products : [];
 
-    if (products.length === 0) {
-      document.getElementById("products-empty").hidden = false;
-    } else {
+    if (products.length > 0) {
+      grid.innerHTML = "";
       products.forEach(function (p) {
         var price = priceInfo(p.price);
 
