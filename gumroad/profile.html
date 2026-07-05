@@ -1,431 +1,105 @@
-<!--
-  THE DIGITAL CITY — Custom Gumroad Profile Page
-  For gumroad.com/buildyourdigitalcity (@buildyourdigitalcity)
-
-  Self-contained: inline CSS/JS only, no external requests (Gumroad's
-  sandbox blocks them). Product/post data is injected server-side by
-  Gumroad into <script id="gumroad-data"> and rendered dynamically, so
-  the page stays current as the catalog changes. Name and bio are
-  interpolated via data-gumroad-field attributes.
-
-  Publish with the Gumroad CLI (from a machine with `gumroad auth login`):
-    gumroad user page preview ./gumroad/profile.html --json --no-input --non-interactive
-    gumroad user page publish ./gumroad/profile.html --json --no-input --non-interactive
-    gumroad user page url --json --jq '.profile.landing_url' --no-input --non-interactive
--->
-<title>The Digital City — Build Your Digital City</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root {
+    --accent: #22d3ee;
+    --primary: #22d3ee;
+    --color-accent: #22d3ee;
     --bg: #0a0a1a;
-    --bg-card: rgba(255, 255, 255, 0.04);
-    --border: rgba(255, 255, 255, 0.09);
+    --card: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.1);
     --text: rgba(255, 255, 255, 0.92);
     --text-mid: rgba(255, 255, 255, 0.55);
     --text-dim: rgba(255, 255, 255, 0.35);
     --cyan: #22d3ee;
     --magenta: #d946ef;
-    --badge-paid-bg: rgba(217, 70, 239, 0.12);
-    --badge-paid-fg: #e879f9;
-    --badge-free-bg: rgba(34, 211, 238, 0.12);
-    --badge-free-fg: #22d3ee;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f6f7fb;
-      --bg-card: rgba(10, 10, 26, 0.03);
-      --border: rgba(10, 10, 26, 0.12);
-      --text: #12122a;
-      --text-mid: rgba(18, 18, 42, 0.65);
-      --text-dim: rgba(18, 18, 42, 0.45);
-      --cyan: #0891b2;
-      --magenta: #a21caf;
-      --badge-paid-bg: rgba(162, 28, 175, 0.1);
-      --badge-paid-fg: #a21caf;
-      --badge-free-bg: rgba(8, 145, 178, 0.1);
-      --badge-free-fg: #0891b2;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
-  /* .page carries inline dark-brand styles as a fallback in case this
-     stylesheet is stripped by the sanitizer; when the stylesheet is
-     active these !important rules restore theme awareness. */
-  .page {
-    background: var(--bg) !important;
-    color: var(--text) !important;
-  }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; position: relative; }
+  body { background: #0a0a1a; color: rgba(255,255,255,0.92); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .dc-wrap { max-width: 1080px; margin: 0 auto; padding: 64px 24px; position: relative; z-index: 1; }
+  .dc-page { background: #0a0a1a; overflow: hidden; position: relative; min-height: 100vh; }
+  .dc-orb { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
+  .dc-mono { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); }
+  .dc-glow { color: var(--cyan); text-shadow: 0 0 24px rgba(34, 211, 238, 0.5); }
 
-  /* Ambient neon orbs + grid (pure CSS, no images) */
-  .orb { position: absolute; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; }
-  .orb-cyan { background: radial-gradient(circle, rgba(34, 211, 238, 0.35), transparent 70%); }
-  .orb-magenta { background: radial-gradient(circle, rgba(217, 70, 239, 0.3), transparent 70%); }
-  .grid-overlay {
-    position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0.5;
-    background-image:
-      linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
-  }
-  @media (prefers-color-scheme: light) {
-    .orb { opacity: 0.5; }
-    .grid-overlay { opacity: 0.35; }
-  }
+  .dc-header { text-align: center; margin-bottom: 64px; }
+  .dc-avatar { width: 84px; height: 84px; margin: 0 auto 22px; border-radius: 20px; background: linear-gradient(135deg, rgba(34,211,238,0.3), rgba(217,70,239,0.3)); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 38px; box-shadow: 0 0 48px rgba(34, 211, 238, 0.25); }
+  .dc-header h1 { font-size: clamp(36px, 6vw, 52px); margin: 0 0 6px; color: #fff; letter-spacing: -0.02em; font-weight: 800; line-height: 1.1; }
+  .dc-tagline { font-size: clamp(19px, 3vw, 25px); font-weight: 700; color: #fff; margin: 10px 0 0; }
+  .dc-tagline .dim { color: var(--text-mid); }
+  .dc-header .dc-bio { font-size: 17px; line-height: 1.6; color: var(--text-mid); max-width: 620px; margin: 16px auto 0; }
+  .dc-ctas { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 30px; }
+  .dc-btn { display: inline-block; padding: 13px 26px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; }
+  .dc-btn-neon { background: linear-gradient(135deg, #22d3ee, #0ea5e9); color: #06121a; box-shadow: 0 0 28px rgba(34, 211, 238, 0.35); }
+  .dc-btn-neon:hover { box-shadow: 0 0 44px rgba(34, 211, 238, 0.55); }
+  .dc-btn-ghost { border: 1px solid var(--border); color: var(--text); background: var(--card); }
+  .dc-btn-ghost:hover { border-color: var(--cyan); }
 
-  .tag-label {
-    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
-    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--cyan);
-  }
-  .glow-cyan { color: var(--cyan); text-shadow: 0 0 24px rgba(34, 211, 238, 0.5); }
+  .dc-section-head { text-align: center; margin: 0 0 36px; }
+  .dc-section-head h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 800; color: #fff; margin: 10px 0 0; letter-spacing: -0.02em; }
+  .dc-section-head p { color: var(--text-dim); margin: 10px auto 0; max-width: 520px; }
 
-  /* Header / hero */
-  header { position: relative; padding: 88px 0 64px; text-align: center; overflow: hidden; }
-  .avatar {
-    width: 88px; height: 88px; margin: 0 auto 24px; border-radius: 22px;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(217, 70, 239, 0.25));
-    border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px; position: relative; z-index: 1;
-    box-shadow: 0 0 48px rgba(34, 211, 238, 0.25);
-  }
-  h1 { font-size: clamp(34px, 6vw, 56px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; position: relative; z-index: 1; }
-  .bio { max-width: 620px; margin: 18px auto 0; color: var(--text-mid); font-size: 17px; position: relative; z-index: 1; }
-  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 32px; position: relative; z-index: 1; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 13px 26px; border-radius: 10px; font-size: 14px; font-weight: 600;
-    text-decoration: none; transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
-  .btn-neon {
-    background: linear-gradient(135deg, #22d3ee, #0ea5e9); color: #06121a;
-    box-shadow: 0 0 28px rgba(34, 211, 238, 0.35);
-  }
-  .btn-neon:hover { transform: translateY(-2px); box-shadow: 0 0 42px rgba(34, 211, 238, 0.55); }
-  .btn-ghost { border: 1px solid var(--border); color: var(--text); background: var(--bg-card); }
-  .btn-ghost:hover { border-color: var(--cyan); transform: translateY(-2px); }
+  .dc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+  .dc-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; background: rgba(255,255,255,0.04); text-decoration: none; color: rgba(255,255,255,0.92); display: block; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
+  .dc-card:hover { border-color: rgba(34, 211, 238, 0.5); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(34, 211, 238, 0.12); }
+  .dc-card:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+  .dc-tile { width: 52px; height: 52px; border-radius: 12px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: #fff; background: linear-gradient(135deg, rgba(34,211,238,0.35), rgba(10,10,26,0.6) 55%, rgba(217,70,239,0.35)); text-shadow: 0 0 18px rgba(34, 211, 238, 0.7); border: 1px solid rgba(255,255,255,0.08); }
+  .dc-card h3 { margin: 0 0 10px; font-size: 17px; color: #fff; font-weight: 700; line-height: 1.35; }
+  .dc-card .dc-cta { display: inline-block; margin-top: 4px; font-weight: 600; color: var(--cyan); font-size: 13px; }
 
-  /* Sections */
-  section { position: relative; padding: 56px 0; border-top: 1px solid var(--border); overflow: hidden; }
-  .section-head { text-align: center; margin-bottom: 40px; position: relative; z-index: 1; }
-  .section-head h2 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; letter-spacing: -0.02em; margin-top: 10px; }
-  .section-head p { color: var(--text-dim); margin-top: 10px; max-width: 540px; margin-left: auto; margin-right: auto; }
+  .dc-bridge { text-align: center; border: 1px solid var(--border); border-radius: 20px; padding: 48px 28px; background: var(--card); margin-top: 64px; position: relative; overflow: hidden; }
+  .dc-bridge h2 { font-size: clamp(24px, 4vw, 32px); font-weight: 800; color: #fff; margin: 10px 0 0; letter-spacing: -0.02em; }
+  .dc-bridge p { color: var(--text-mid); max-width: 520px; margin: 12px auto 26px; }
 
-  /* Product grid */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; position: relative; z-index: 1; }
-  .card {
-    display: flex; flex-direction: column; text-decoration: none; color: inherit;
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-    overflow: hidden; transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-  }
-  .card:hover { transform: translateY(-4px); border-color: rgba(34, 211, 238, 0.45); box-shadow: 0 12px 40px rgba(34, 211, 238, 0.12); }
-  .card:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
-  .thumb {
-    aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center;
-    font-size: 44px; font-weight: 800; color: rgba(255, 255, 255, 0.85);
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.28), rgba(10, 10, 26, 0.65) 55%, rgba(217, 70, 239, 0.28));
-    text-shadow: 0 0 22px rgba(34, 211, 238, 0.6);
-  }
-  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .card-body { padding: 18px; display: flex; flex-direction: column; flex: 1; gap: 8px; }
-  .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .type-badge {
-    font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--text-dim);
-  }
-  .price-badge { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 7px; white-space: nowrap; }
-  .price-paid { background: var(--badge-paid-bg); color: var(--badge-paid-fg); }
-  .price-free { background: var(--badge-free-bg); color: var(--badge-free-fg); }
-  .card-title { font-size: 16px; font-weight: 700; line-height: 1.35; }
-  .card-desc { font-size: 13px; color: var(--text-mid); flex: 1; }
-  .card-cta { font-size: 13px; font-weight: 600; color: var(--cyan); margin-top: 6px; }
-  .empty-note { text-align: center; color: var(--text-dim); position: relative; z-index: 1; }
-
-  /* Posts */
-  .posts { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
-  .post {
-    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
-    padding: 15px 20px; border: 1px solid var(--border); border-radius: 12px;
-    background: var(--bg-card); text-decoration: none; color: var(--text);
-    transition: border-color 0.15s ease;
-  }
-  .post:hover { border-color: rgba(34, 211, 238, 0.45); }
-  .post:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
-  .post-date { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
-
-  /* Site bridge */
-  .bridge {
-    text-align: center; border: 1px solid var(--border); border-radius: 20px;
-    padding: 48px 28px; background: var(--bg-card); position: relative; z-index: 1; overflow: hidden;
-  }
-  .bridge h2 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; letter-spacing: -0.02em; }
-  .bridge p { color: var(--text-mid); max-width: 520px; margin: 12px auto 26px; }
-
-  footer { padding: 36px 0 48px; text-align: center; color: var(--text-dim); font-size: 13px; position: relative; }
-  footer a { color: var(--cyan); text-decoration: none; }
-  footer a:hover { text-decoration: underline; }
-
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .btn, .card, .post { transition: none; }
-    .btn-neon:hover, .btn-ghost:hover, .card:hover { transform: none; }
-  }
+  .dc-footer { text-align: center; color: var(--text-dim); font-size: 13px; margin-top: 56px; }
+  .dc-footer a { color: var(--cyan); text-decoration: none; }
+  .dc-footer a:hover { text-decoration: underline; }
+  a { color: #22d3ee; }
+  @media (prefers-reduced-motion: reduce) { .dc-card, .dc-btn { transition: none; } .dc-card:hover { transform: none; } }
 </style>
+<div class="dc-page" style="background:#0a0a1a;color:#ffffff;min-height:100vh;">
+  <div class="dc-orb" style="position:absolute;pointer-events:none;width:480px;height:480px;top:-180px;left:-140px;background:radial-gradient(circle, rgba(34,211,238,0.3), transparent 70%);"></div>
+  <div class="dc-orb" style="position:absolute;pointer-events:none;width:400px;height:400px;top:200px;right:-160px;background:radial-gradient(circle, rgba(217,70,239,0.25), transparent 70%);"></div>
+  <div class="dc-orb" style="position:absolute;pointer-events:none;width:360px;height:360px;bottom:-120px;left:20%;background:radial-gradient(circle, rgba(34,211,238,0.2), transparent 70%);"></div>
 
-<div class="page" style="background:#0a0a1a;color:#ffffff;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;line-height:1.6;">
-<header>
-  <div class="orb orb-cyan" style="position:absolute;pointer-events:none;width:480px;height:480px;top:-200px;left:-140px;"></div>
-  <div class="orb orb-magenta" style="position:absolute;pointer-events:none;width:380px;height:380px;top:40px;right:-160px;"></div>
-  <div class="grid-overlay"></div>
-  <div class="wrap">
-    <div class="avatar" aria-hidden="true">🏙️</div>
-    <p class="tag-label">The framework for digital asset builders</p>
-    <h1 style="margin-top:14px;">
-      <span data-gumroad-field="name">The Digital City</span>
-    </h1>
-    <p style="margin-top:12px;font-size:clamp(19px,3vw,26px);font-weight:700;">
-      The internet is a <span class="glow-cyan">city.</span>
-      <span style="color:var(--text-mid);">Most people are renters.</span>
-    </p>
-    <p class="bio" data-gumroad-field="bio">
-      Frameworks, guides, and tools for building digital assets that compound —
-      and becoming an owner in the internet economy.
-    </p>
-    <div class="cta-row">
-      <a class="btn btn-neon" href="#products">Browse the Products ↓</a>
-      <a class="btn btn-ghost" href="https://buildyourdigitalcity.com" rel="noopener">Visit buildyourdigitalcity.com →</a>
+  <div class="dc-wrap">
+    <div class="dc-header">
+      <div class="dc-avatar" aria-hidden="true">🏙️</div>
+      <p class="dc-mono">The framework for digital asset builders</p>
+      <h1><span data-gumroad-field="name">The Digital City</span></h1>
+      <p class="dc-tagline">The internet is a <span class="dc-glow">city.</span> <span class="dim">Most people are renters.</span></p>
+      <p class="dc-bio" data-gumroad-field="bio">Teaching you to see the internet as a city — and own property in it instead of renting. Maps, playbooks, and systems from The Digital City.</p>
+      <div class="dc-ctas">
+        <a class="dc-btn dc-btn-neon" href="#dc-products">Browse the Products ↓</a>
+        <a class="dc-btn dc-btn-ghost" href="https://buildyourdigitalcity.com" rel="noopener">Visit buildyourdigitalcity.com →</a>
+      </div>
     </div>
-  </div>
-</header>
 
-<section id="products" aria-labelledby="products-heading">
-  <div class="orb orb-magenta" style="position:absolute;pointer-events:none;width:360px;height:360px;bottom:-160px;left:-140px;"></div>
-  <div class="wrap">
-    <div class="section-head">
-      <p class="tag-label">Resources · Guides · Tools</p>
-      <h2 id="products-heading">Build Your Stack</h2>
+    <div class="dc-section-head" id="dc-products">
+      <p class="dc-mono">Maps · Playbooks · Systems</p>
+      <h2>Build Your Stack</h2>
       <p>Everything you need to move from consumer to builder-owner.</p>
     </div>
-    <!-- Static cards render even if scripts are stripped; the script below
-         replaces them with the live injected catalog when it has products. -->
-    <div class="grid" id="product-grid">
-      <a class="card" href="https://buildyourdigitalcity.gumroad.com/l/owner-vs-renter"
-         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
-        <div class="card-body" style="padding:0;">
-          <div class="card-meta"><span class="type-badge">Assessment</span><span class="price-badge price-paid">$9</span></div>
-          <h3 class="card-title">Owner vs Renter Assessment</h3>
-          <p class="card-desc">Discover where you stand in the digital economy — building assets that compound, or renting attention from platforms that do.</p>
-          <span class="card-cta">View product →</span>
-        </div>
-      </a>
-      <a class="card" href="https://buildyourdigitalcity.com/store"
-         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
-        <div class="card-body" style="padding:0;">
-          <div class="card-meta"><span class="type-badge">Ebook</span><span class="price-badge price-paid">$39</span></div>
-          <h3 class="card-title">The Digital City</h3>
-          <p class="card-desc">The complete guide to understanding the internet economy and building digital assets that compound.</p>
-          <span class="card-cta">View on the website →</span>
-        </div>
-      </a>
-      <a class="card" href="https://buildyourdigitalcity.com/#subscribe"
-         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
-        <div class="card-body" style="padding:0;">
-          <div class="card-meta"><span class="type-badge">Strategic Guide</span><span class="price-badge price-free">Free</span></div>
-          <h3 class="card-title">The Sovereign Digital Entrepreneur</h3>
-          <p class="card-desc">Strategic frameworks for online monetization in 2026 — AI orchestration and zero-capital business models.</p>
-          <span class="card-cta">Get it free →</span>
-        </div>
-      </a>
-      <a class="card" href="https://buildyourdigitalcity.com/#subscribe"
-         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
-        <div class="card-body" style="padding:0;">
-          <div class="card-meta"><span class="type-badge">Toolkit</span><span class="price-badge price-free">Free</span></div>
-          <h3 class="card-title">The Builder's Toolkit</h3>
-          <p class="card-desc">Every tool you need to build a digital asset portfolio — honest assessments, real recommendations.</p>
-          <span class="card-cta">Get it free →</span>
-        </div>
-      </a>
-      <a class="card" href="https://buildyourdigitalcity.com/store"
-         style="display:block;padding:20px;border:1px solid rgba(128,128,160,0.35);border-radius:14px;margin:6px 0;color:inherit;text-decoration:none;">
-        <div class="card-body" style="padding:0;">
-          <div class="card-meta"><span class="type-badge">Blueprint</span><span class="price-badge price-paid">$17</span></div>
-          <h3 class="card-title">Portfolio Blueprint</h3>
-          <p class="card-desc">A step-by-step system for building your first digital asset portfolio.</p>
-          <span class="card-cta">View on the website →</span>
-        </div>
-      </a>
+
+    <div class="dc-grid">
+      <a class="dc-card" href="/l/e-book"><div class="dc-tile" aria-hidden="true">E</div><h3>E-Book</h3><span class="dc-cta">View product →</span></a>
+      <a class="dc-card" href="/l/owner-vs-renter"><div class="dc-tile" aria-hidden="true">O</div><h3>Owner vs Renter</h3><span class="dc-cta">View product →</span></a>
+      <a class="dc-card" href="/l/90-day-builder"><div class="dc-tile" aria-hidden="true">9</div><h3>90-Day Builder</h3><span class="dc-cta">View product →</span></a>
+      <a class="dc-card" href="/l/portfolio_os"><div class="dc-tile" aria-hidden="true">P</div><h3>Portfolio OS</h3><span class="dc-cta">View product →</span></a>
+      <a class="dc-card" href="/l/invisible-economy"><div class="dc-tile" aria-hidden="true">I</div><h3>Invisible Economy</h3><span class="dc-cta">View product →</span></a>
+      <a class="dc-card" href="/l/digital-asset-valuation-kit"><div class="dc-tile" aria-hidden="true">V</div><h3>Digital Asset Valuation Kit</h3><span class="dc-cta">View product →</span></a>
+      <a class="dc-card" href="/l/district-selector"><div class="dc-tile" aria-hidden="true">D</div><h3>District Selector</h3><span class="dc-cta">View product →</span></a>
+      <a class="dc-card" href="/l/promptkit"><div class="dc-tile" aria-hidden="true">K</div><h3>Prompt Kit</h3><span class="dc-cta">View product →</span></a>
+      <a class="dc-card" href="/l/quickreference"><div class="dc-tile" aria-hidden="true">Q</div><h3>Quick Reference</h3><span class="dc-cta">View product →</span></a>
+    </div>
+
+    <div class="dc-bridge">
+      <div class="dc-orb" style="position:absolute;pointer-events:none;width:280px;height:280px;top:-110px;right:-90px;background:radial-gradient(circle, rgba(34,211,238,0.25), transparent 70%);"></div>
+      <p class="dc-mono">Free Framework Guide</p>
+      <h2>Get your plot in <span class="dc-glow">the city.</span></h2>
+      <p>Join The Digital City Dispatch and get the free strategic guide — zero-capital business models, AI orchestration, and the map of the internet economy. No spam, ever.</p>
+      <a class="dc-btn dc-btn-neon" href="https://buildyourdigitalcity.com/#subscribe" rel="noopener">Get the Free Guide →</a>
+    </div>
+
+    <div class="dc-footer">
+      <span data-gumroad-field="name">The Digital City</span> · Strandway Systems · <a href="https://buildyourdigitalcity.com" rel="noopener">buildyourdigitalcity.com</a>
     </div>
   </div>
-</section>
-
-<section id="posts-section" aria-labelledby="posts-heading" hidden>
-  <div class="wrap">
-    <div class="section-head">
-      <p class="tag-label">Dispatches from the City</p>
-      <h2 id="posts-heading">Latest Posts</h2>
-    </div>
-    <div class="posts" id="post-list"></div>
-  </div>
-</section>
-
-<section aria-labelledby="bridge-heading">
-  <div class="wrap">
-    <div class="bridge">
-      <div class="orb orb-cyan" style="position:absolute;pointer-events:none;width:300px;height:300px;top:-120px;right:-100px;"></div>
-      <p class="tag-label">Free Framework Guide</p>
-      <h2 id="bridge-heading" style="margin-top:10px;">Get your plot in <span class="glow-cyan">the city.</span></h2>
-      <p>
-        Join The Digital City Dispatch and get the free strategic guide —
-        zero-capital business models, AI orchestration, and the map of the
-        internet economy. Delivered by email, no spam, ever.
-      </p>
-      <a class="btn btn-neon" href="https://buildyourdigitalcity.com/#subscribe" rel="noopener">
-        Get the Free Guide →
-      </a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <span data-gumroad-field="name">The Digital City</span> · Strandway Systems ·
-    <a href="https://buildyourdigitalcity.com" rel="noopener">buildyourdigitalcity.com</a>
-  </div>
-</footer>
 </div>
-
-<script id="gumroad-data" type="application/json">
-  { "products": [], "posts": [], "pages": [] }
-</script>
-
-<script>
-  (function () {
-    var data = { products: [], posts: [], pages: [] };
-    try {
-      var dataEl = document.getElementById("gumroad-data");
-      if (dataEl) data = JSON.parse(dataEl.textContent) || data;
-    } catch (e) { /* fall through to empty state */ }
-
-    var TYPE_LABELS = {
-      digital: "Digital Product",
-      ebook: "Ebook",
-      course: "Course",
-      membership: "Membership",
-      bundle: "Bundle",
-      call: "Call",
-      coffee: "Support",
-      audiobook: "Audiobook",
-      physical: "Physical",
-    };
-
-    function priceInfo(price) {
-      // Gumroad may inject price as formatted string ("$39") or cents (3900).
-      if (price === 0 || price === "0" || price === "$0" || price === "" || price == null) {
-        return { label: "Free", free: true };
-      }
-      if (typeof price === "number") {
-        var dollars = price / 100;
-        var label = dollars % 1 === 0 ? "$" + dollars : "$" + dollars.toFixed(2);
-        return { label: label, free: dollars <= 0 };
-      }
-      var s = String(price).trim();
-      var free = /^(\$?0(\.0+)?|free)$/i.test(s);
-      return { label: free ? "Free" : s, free: free };
-    }
-
-    function stripHtml(html) {
-      var tmp = document.createElement("div");
-      tmp.innerHTML = html || "";
-      return (tmp.textContent || "").trim();
-    }
-
-    function el(tag, className, text) {
-      var node = document.createElement(tag);
-      if (className) node.className = className;
-      if (text) node.textContent = text;
-      return node;
-    }
-
-    // ── Products ──────────────────────────────────────────────────────────
-    // Static fallback cards are already in the grid; only replace them when
-    // the injected catalog actually has products.
-    var grid = document.getElementById("product-grid");
-    var products = Array.isArray(data.products) ? data.products : [];
-
-    if (products.length > 0) {
-      grid.innerHTML = "";
-      products.forEach(function (p) {
-        var price = priceInfo(p.price);
-
-        var card = el("a", "card");
-        card.href = p.url || "#";
-        card.setAttribute("aria-label", (p.name || "Product") + " — " + price.label);
-
-        var thumb = el("div", "thumb");
-        if (p.thumbnail_url) {
-          var img = document.createElement("img");
-          img.src = p.thumbnail_url;
-          img.alt = "";
-          img.loading = "lazy";
-          img.onerror = function () {
-            img.remove();
-            thumb.textContent = (p.name || "?").charAt(0).toUpperCase();
-          };
-          thumb.appendChild(img);
-        } else {
-          thumb.textContent = (p.name || "?").charAt(0).toUpperCase();
-        }
-        card.appendChild(thumb);
-
-        var body = el("div", "card-body");
-        var meta = el("div", "card-meta");
-        meta.appendChild(el("span", "type-badge", TYPE_LABELS[p.native_type] || p.native_type || "Product"));
-        meta.appendChild(el("span", "price-badge " + (price.free ? "price-free" : "price-paid"), price.label));
-        body.appendChild(meta);
-
-        body.appendChild(el("h3", "card-title", p.name || "Untitled"));
-
-        var desc = stripHtml(p.description);
-        if (desc) {
-          if (desc.length > 150) desc = desc.slice(0, 147) + "…";
-          body.appendChild(el("p", "card-desc", desc));
-        }
-
-        body.appendChild(el("span", "card-cta", price.free ? "Get it free →" : "View product →"));
-        card.appendChild(body);
-        grid.appendChild(card);
-      });
-    }
-
-    // ── Posts ─────────────────────────────────────────────────────────────
-    var posts = Array.isArray(data.posts) ? data.posts : [];
-    if (posts.length > 0) {
-      document.getElementById("posts-section").hidden = false;
-      var list = document.getElementById("post-list");
-      posts.slice(0, 6).forEach(function (post) {
-        var row = el("a", "post");
-        row.href = post.url || "#";
-        row.appendChild(el("span", null, post.name || "Untitled post"));
-        if (post.published_at) {
-          var d = new Date(post.published_at);
-          if (!isNaN(d)) {
-            row.appendChild(el("span", "post-date", d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })));
-          }
-        }
-        list.appendChild(row);
-      });
-    }
-  })();
-</script>
