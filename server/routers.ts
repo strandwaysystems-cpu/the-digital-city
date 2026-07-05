@@ -4,6 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, adminProcedure, router } from "./_core/trpc";
 import { z } from "zod";
 import { getAllProducts, getProductBySlug, getProductById, getFreeProducts, getPaidProducts, createProduct, getUserOrders, getUserDownloads, hasDownloadAccess, incrementDownloadCount, createSubscriber } from "./db";
+import { fetchGumroadProducts } from "./gumroad";
 import { storageGet } from "./storage";
 
 export const appRouter = router({
@@ -14,6 +15,13 @@ export const appRouter = router({
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
+    }),
+  }),
+
+  // ─── Gumroad (live storefront catalog) ───────────────────────────────────────
+  gumroad: router({
+    products: publicProcedure.query(async () => {
+      return fetchGumroadProducts();
     }),
   }),
 

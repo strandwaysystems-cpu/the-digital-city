@@ -1,13 +1,14 @@
 /**
  * THE DIGITAL CITY — Store
  *
- * Renders the full catalog from trpc.products.list so it stays current as
- * products are added or removed, with a curated fallback covering every
- * known product when the catalog is empty or unreachable. The Owner vs
- * Renter Assessment lives on Gumroad (not in the DB) so it is always
- * appended as a static entry. Paid products link to their Gumroad page
- * when one is known (GUMROAD_LINKS) and show "Coming soon" otherwise;
- * free products funnel to the Kit email opt-in on the home page.
+ * Primary source: the live Gumroad catalog, fetched server-side with the
+ * GUMROAD_TOKEN env var and exposed via trpc.gumroad.products. Cards link
+ * with class="gumroad-button" + the product's short_url so Gumroad's
+ * overlay script (loaded in index.html) opens pop-up checkout in place.
+ *
+ * Fallbacks (when the token isn't set or the API is unreachable): the
+ * site's own DB catalog (trpc.products.list), then a curated static list,
+ * so the store never renders empty.
  */
 
 import { Link } from "wouter";
@@ -16,8 +17,7 @@ import { trpc } from "@/lib/trpc";
 
 const LOGO = "/logo.jpg";
 
-// Gumroad product pages by catalog slug. Add entries here as products go
-// live on Gumroad and the store buttons activate automatically.
+// Gumroad product pages by DB catalog slug, used only on the fallback path.
 const GUMROAD_LINKS: Record<string, string> = {
   "owner-vs-renter": "https://buildyourdigitalcity.gumroad.com/l/owner-vs-renter",
 };
@@ -52,7 +52,7 @@ const ASSESSMENT: DisplayProduct = {
   gumroadUrl: GUMROAD_LINKS["owner-vs-renter"],
 };
 
-/** Shown while the catalog loads, or if it's empty/unreachable. */
+/** Shown only if both the Gumroad API and the DB catalog are unavailable. */
 const FALLBACK_PRODUCTS: DisplayProduct[] = [
   ASSESSMENT,
   {
@@ -99,18 +99,91 @@ function formatPrice(price: string): string {
   return Number.isInteger(value) ? `$${value}` : `$${value.toFixed(2)}`;
 }
 
-export default function Store() {
-  const { data: catalog, isLoading } = trpc.products.list.useQuery(undefined, {
+function SkeletonGrid() {
+  return (
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" aria-hidden="true">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="glass-card p-8 h-64 animate-pulse">
+          <div className="h-3 w-1/4 rounded bg-white/5 mb-6" />
+          <div className="h-5 w-2/3 rounded bg-white/10 mb-4" />
+          <div className="h-3 w-full rounded bg-white/5 mb-2" />
+          <div className="h-3 w-5/6 rounded bg-white/5" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Live grid built from the Gumroad API, with overlay pop-up checkout. */
+function GumroadGrid({ products }: { products: NonNullable<ReturnType<typeof useGumroadProducts>["data"]> }) {
+  return (
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {products.map((p) => (
+        <div key={p.id} className="glass-card overflow-hidden flex flex-col group">
+          {p.thumbnailUrl ? (
+            <img src={p.thumbnailUrl} alt="" loading="lazy" className="w-full aspect-[4/3] object-cover" />
+          ) : (
+            <div
+              aria-hidden="true"
+              className="w-full aspect-[4/3] flex items-center justify-center text-5xl font-extrabold text-white/80 bg-gradient-to-br from-cyan-400/25 via-[#0a0a1a]/60 to-fuchsia-500/25"
+              style={{ textShadow: "0 0 24px rgba(34,211,238,0.6)" }}
+            >
+              {p.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="p-6 flex flex-col flex-1">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white text-lg font-bold leading-snug">{p.name}</h3>
+              <span
+                className={`text-xs font-semibold px-2.5 py-1 rounded-md whitespace-nowrap ml-3 ${
+                  p.isFree ? "bg-cyan-400/10 text-cyan-400" : "bg-purple-400/10 text-purple-400"
+                }`}
+              >
+                {p.formattedPrice}
+              </span>
+            </div>
+            {p.summary && (
+              <p className="text-white/40 text-sm leading-relaxed flex-1 mb-6">{p.summary}</p>
+            )}
+            <a
+              className="gumroad-button w-full btn-neon flex items-center justify-center gap-2 py-3 text-sm"
+              href={p.shortUrl}
+            >
+              {p.isFree ? "Get It Free" : `Get It · ${p.formattedPrice}`}
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function useGumroadProducts() {
+  return trpc.gumroad.products.useQuery(undefined, {
     retry: 1,
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+}
 
-  const products: DisplayProduct[] =
-    catalog && catalog.length > 0
+export default function Store() {
+  const gumroad = useGumroadProducts();
+  const catalog = trpc.products.list.useQuery(undefined, {
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    // Only needed when the Gumroad catalog comes back empty.
+    enabled: gumroad.isSuccess ? gumroad.data.length === 0 : gumroad.isError,
+  });
+
+  const liveProducts = gumroad.data ?? [];
+  const useLive = liveProducts.length > 0;
+
+  const fallbackProducts: DisplayProduct[] =
+    catalog.data && catalog.data.length > 0
       ? [
           ASSESSMENT,
-          ...catalog.map((p): DisplayProduct => {
+          ...catalog.data.map((p): DisplayProduct => {
             const isFree = p.isFree || Number.parseFloat(p.price) <= 0;
             const gumroadUrl = GUMROAD_LINKS[p.slug];
             return {
@@ -125,6 +198,8 @@ export default function Store() {
           }),
         ]
       : FALLBACK_PRODUCTS;
+
+  const isLoading = gumroad.isLoading || (!useLive && catalog.isLoading);
 
   return (
     <div className="min-h-screen bg-[#0a0a1a] text-white relative">
@@ -169,26 +244,18 @@ export default function Store() {
       <section className="pb-24 relative">
         <div className="container">
           {isLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" aria-hidden="true">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="glass-card p-8 h-64 animate-pulse">
-                  <div className="h-3 w-1/4 rounded bg-white/5 mb-6" />
-                  <div className="h-5 w-2/3 rounded bg-white/10 mb-4" />
-                  <div className="h-3 w-full rounded bg-white/5 mb-2" />
-                  <div className="h-3 w-5/6 rounded bg-white/5" />
-                </div>
-              ))}
-            </div>
+            <SkeletonGrid />
+          ) : useLive ? (
+            <GumroadGrid products={liveProducts} />
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
+              {fallbackProducts.map((product) => (
                 <div
                   key={product.key}
                   className={`glass-card p-8 flex flex-col group ${
                     product.status === "coming-soon" ? "opacity-60" : ""
                   }`}
                 >
-                  {/* Header */}
                   <div className="flex items-center justify-between mb-6">
                     <span className="tag-label text-white/30">
                       {product.typeLabel}
@@ -204,7 +271,6 @@ export default function Store() {
                     </span>
                   </div>
 
-                  {/* Title & Description */}
                   <h3 className="text-white text-xl font-bold mb-3">
                     {product.name}
                   </h3>
@@ -212,13 +278,10 @@ export default function Store() {
                     {product.description}
                   </p>
 
-                  {/* CTA */}
                   {product.status === "live" && product.gumroadUrl && (
                     <a
                       href={product.gumroadUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full btn-neon flex items-center justify-center gap-2 py-3 text-sm"
+                      className="gumroad-button w-full btn-neon flex items-center justify-center gap-2 py-3 text-sm"
                     >
                       <ExternalLink size={14} />
                       Get It · {product.price}
