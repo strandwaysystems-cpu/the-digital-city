@@ -72,3 +72,22 @@ describe("library", () => {
     expect(articles.some(a => a.slug.startsWith("_"))).toBe(false);
   });
 });
+
+describe("enhanceHtml", () => {
+  it("numbers h2s, builds a toc, wraps tables and styles flows, tips and notes", async () => {
+    const { enhanceHtml } = await import("./library");
+    const { html, toc } = enhanceHtml(
+      "<p>Intro</p><h2>What changed</h2><p><strong>A → B → C</strong></p><p><strong>Tip:</strong> do it</p>" +
+        "<blockquote>\n<p>✍️ <strong>Add</strong> this</p>\n</blockquote><table><tr><td>x</td></tr></table>" +
+        "<h2>What changed</h2><hr>\n<p><strong>Sources</strong></p>\n<ul><li>s</li></ul>"
+    );
+    expect(toc.map(t => t.id)).toEqual(["what-changed", "what-changed-x"]);
+    expect(html).toContain('<p class="intro">Intro');
+    expect(html).toContain('<span class="num">01</span>');
+    expect(html).toContain('<span class="step">B</span>');
+    expect(html).toContain('<p class="tip">');
+    expect(html).toContain('class="author-note"');
+    expect(html).toContain('<div class="table-wrap"><table>');
+    expect(html).toContain('<section class="sources"><h4>Sources</h4>');
+  });
+});

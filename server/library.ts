@@ -85,6 +85,44 @@ export function parseArticle(slug: string, source: string): Article | null {
   };
 }
 
+/**
+ * Post-processes rendered Markdown so articles read well without the writer
+ * needing any special syntax:
+ *  - h2s get ids, a section number, and feed the "In this article" list
+ *  - tables are wrapped so they scroll sideways on phones
+ *  - a paragraph that is only bold text with arrows ("**A → B → C**") becomes
+ *    a step-by-step flow
+ *  - paragraphs starting "**Tip:**" become tip callouts
+ *  - blockquotes starting with ✍️ become author-note boxes
+ *  - everything after a horizontal rule followed by "**Sources**" becomes a
+ *    quieter sources section
+ *  - the first paragraph becomes a larger intro paragraph
+ */
+export function enhanceHtml(html: string): { html: string; toc: { id: string; text: string }[] } {
+  const toc: { id: string; text: string }[] = [];
+  const used = new Set<string>();
+  let n = 0;
+  let out = html.replace(/<h2>([\s\S]*?)<\/h2>/g, (_m, inner: string) => {
+    const text = inner.replace(/<[^>]+>/g, "").trim();
+    let id = text.toLowerCase().replace(/&[a-z#0-9]+;/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "section";
+    while (used.has(id)) id += "-x";
+    used.add(id);
+    n += 1;
+    toc.push({ id, text });
+    return `<h2 id="${id}"><span class="num">${String(n).padStart(2, "0")}</span>${inner}</h2>`;
+  });
+  out = out.replace(/<table>([\s\S]*?)<\/table>/g, '<div class="table-wrap"><table>$1</table></div>');
+  out = out.replace(/<p><strong>([^<]*?→[^<]*?)<\/strong><\/p>/g, (_m, inner: string) => {
+    const steps = inner.split("→").map(x => `<span class="step">${x.trim()}</span>`);
+    return `<p class="flow">${steps.join('<span class="arrow" aria-hidden="true">→</span>')}</p>`;
+  });
+  out = out.replace(/<p><strong>Tip:<\/strong>\s*/g, '<p class="tip"><span class="tip-label">Tip</span>');
+  out = out.replace(/<blockquote>\s*<p>✍️\s*/g, '<blockquote class="author-note"><p>');
+  out = out.replace(/<hr>\s*<p><strong>Sources<\/strong><\/p>([\s\S]*)$/, '<section class="sources"><h4>Sources</h4>$1</section>');
+  out = out.replace(/<p>/, '<p class="intro">');
+  return { html: out, toc };
+}
+
 export function isVisible(article: Article, today = new Date().toISOString().slice(0, 10)): boolean {
   return article.status === "published" && article.date <= today;
 }
@@ -137,50 +175,115 @@ function formatDate(iso: string): string {
 }
 
 const STYLES = `
-:root{--bg:#0a0a1a;--panel:rgba(255,255,255,.03);--line:rgba(255,255,255,.08);--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.55);--cyan:#22d3ee;--magenta:#e040fb}
+:root{--bg:#0a0a1a;--bg2:#0e0e22;--panel:rgba(255,255,255,.035);--line:rgba(255,255,255,.09);--text:rgba(255,255,255,.9);--body:#c9cde0;--muted:rgba(255,255,255,.55);--cyan:#22d3ee;--magenta:#e040fb;--amber:#fbbf24}
 *{box-sizing:border-box}
-html{background:var(--bg)}
+html{background:var(--bg);scroll-behavior:smooth;scroll-padding-top:88px}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
-a{color:var(--cyan)}
+a{color:var(--cyan);text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{text-decoration-color:var(--magenta)}
 .wrap{max-width:720px;margin:0 auto;padding:0 20px}
 .wide{max-width:1040px}
 nav{position:sticky;top:0;z-index:10;border-bottom:1px solid var(--line);background:rgba(10,10,26,.85);backdrop-filter:blur(16px)}
 nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1040px}
+.progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:20;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width .1s linear}
 .brand{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;font-weight:600;font-size:14px}
 .brand img{width:32px;height:32px;border-radius:8px}
 .links{display:flex;gap:24px;align-items:center}
 .links a{color:var(--muted);text-decoration:none;font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase}
 .links a.on,.links a:hover{color:var(--cyan)}
-.btn{display:inline-block;padding:10px 20px;border-radius:999px;border:1px solid rgba(34,211,238,.5);background:rgba(34,211,238,.1);color:var(--cyan);text-decoration:none;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
-.btn:hover{background:rgba(34,211,238,.2)}
+.btn{display:inline-block;padding:11px 22px;border-radius:999px;border:1px solid rgba(34,211,238,.5);background:rgba(34,211,238,.1);color:var(--cyan);text-decoration:none;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;transition:background .2s,box-shadow .2s}
+.btn:hover{background:rgba(34,211,238,.2);box-shadow:0 0 24px rgba(34,211,238,.25)}
+.btn.solid{background:linear-gradient(90deg,var(--cyan),#3b82f6);color:#06121a;border:0}
+.btn.solid:hover{box-shadow:0 0 32px rgba(34,211,238,.4)}
 .tag{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
-header.hero{padding:72px 0 32px}
-h1{font-size:clamp(32px,5vw,48px);line-height:1.15;letter-spacing:-.02em;margin:12px 0 16px;color:#fff}
-.lede{font-size:18px;color:var(--muted);margin:0}
-.meta{font-size:13px;color:var(--muted);margin-top:20px}
-article{padding-bottom:24px}
-article h2{font-size:26px;line-height:1.3;margin:48px 0 12px;color:#fff;letter-spacing:-.01em}
-article h3{font-size:20px;margin:32px 0 8px;color:#fff}
-article p,article li{font-size:17px}
-article blockquote{margin:24px 0;padding:4px 20px;border-left:3px solid var(--magenta);color:var(--muted)}
-article code{font-family:"JetBrains Mono",monospace;font-size:.9em;background:var(--panel);padding:2px 6px;border-radius:4px}
-article table{border-collapse:collapse;width:100%;margin:24px 0;font-size:15px}
-article th,article td{border:1px solid var(--line);padding:8px 12px;text-align:left}
-.card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:28px;margin:32px 0}
+
+/* Hero */
+.hero-band{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:
+  radial-gradient(600px 300px at 15% 0%,rgba(34,211,238,.14),transparent 70%),
+  radial-gradient(500px 300px at 90% 20%,rgba(224,64,251,.12),transparent 70%),var(--bg2)}
+.hero-band:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(#000,transparent 85%);-webkit-mask-image:linear-gradient(#000,transparent 85%)}
+header.hero{position:relative;padding:72px 0 48px}
+.crumbs{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:999px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);color:var(--cyan);text-decoration:none}
+.pill.alt{border-color:rgba(224,64,251,.35);background:rgba(224,64,251,.08);color:#f0abfc}
+h1{font-size:clamp(32px,5.2vw,52px);line-height:1.1;letter-spacing:-.025em;margin:18px 0 18px;color:#fff;font-weight:700}
+.lede{font-size:19px;line-height:1.6;color:rgba(255,255,255,.65);margin:0}
+.meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:24px}
+.meta span:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cyan);margin-right:8px;vertical-align:middle;opacity:.8}
+
+/* Table of contents */
+.toc{margin:40px 0 8px;padding:22px 24px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.toc summary{cursor:pointer;list-style:none;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary:after{content:" +";color:var(--cyan)}
+.toc[open] summary:after{content:" −"}
+.toc ol{list-style:none;margin:14px 0 0;padding:0;counter-reset:toc}
+.toc li{counter-increment:toc;padding:6px 0;border-top:1px solid rgba(255,255,255,.05);font-size:15px}
+.toc li:first-child{border-top:0}
+.toc li:before{content:counter(toc,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--cyan);margin-right:12px}
+.toc a{color:var(--text);text-decoration:none}
+.toc a:hover{color:var(--cyan)}
+
+/* Article body */
+article{padding:16px 0 24px;color:var(--body)}
+article p,article li{font-size:18px;line-height:1.78}
+article p{margin:0 0 22px}
+article p.intro{font-size:21px;line-height:1.65;color:rgba(255,255,255,.88)}
+article strong{color:#fff;font-weight:600}
+article h2{position:relative;font-size:clamp(25px,3.4vw,31px);line-height:1.25;margin:72px 0 20px;padding-top:30px;color:#fff;letter-spacing:-.02em;border-top:1px solid var(--line)}
+article h2 .num{display:block;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:500;letter-spacing:.14em;margin-bottom:10px;background:linear-gradient(90deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+article h3{font-size:21px;line-height:1.35;margin:44px 0 12px;color:#fff;padding-left:16px;border-left:3px solid var(--cyan)}
+article ul,article ol{padding-left:0;margin:0 0 24px;list-style:none}
+article ul li{position:relative;padding-left:28px;margin:10px 0}
+article ul li:before{content:"";position:absolute;left:6px;top:.72em;width:7px;height:7px;border-radius:2px;background:var(--cyan);transform:rotate(45deg)}
+article ol{counter-reset:item}
+article ol li{position:relative;padding-left:44px;margin:16px 0;counter-increment:item}
+article ol li:before{content:counter(item);position:absolute;left:0;top:.15em;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:600;color:var(--cyan);border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.08)}
+article code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:5px}
+article blockquote{margin:28px 0;padding:18px 22px;border-radius:14px;border:1px solid rgba(224,64,251,.25);background:rgba(224,64,251,.06);color:var(--body)}
+article blockquote p:last-child{margin-bottom:0}
+article blockquote.author-note{border:1px dashed rgba(251,191,36,.55);background:rgba(251,191,36,.06)}
+article blockquote.author-note:before{content:"✍️ Author note";display:block;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+p.tip{position:relative;padding:16px 20px 16px 20px;border-radius:14px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.22);font-size:16.5px}
+.tip-label{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#06121a;background:var(--cyan);border-radius:6px;padding:2px 8px;margin-right:10px;vertical-align:2px;font-weight:600}
+p.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 22px}
+p.flow .step{font-size:14px;font-weight:600;color:#fff;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
+p.flow .arrow{color:var(--cyan);font-size:16px}
+.table-wrap{margin:28px 0 32px;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--panel);-webkit-overflow-scrolling:touch}
+article table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px;line-height:1.55}
+article th{text-align:left;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);background:rgba(34,211,238,.06);padding:14px 16px;border-bottom:1px solid var(--line)}
+article td{padding:14px 16px;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.05)}
+article tr:last-child td{border-bottom:0}
+article tbody tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+article td:first-child{color:#fff;font-weight:600}
+article hr{border:0;height:1px;background:var(--line);margin:56px 0}
+.sources{margin-top:64px;padding-top:24px;border-top:1px solid var(--line)}
+.sources h4{margin:0 0 12px;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.sources li,.sources p{font-size:14px;line-height:1.6;color:var(--muted)}
+.sources ul li:before{background:var(--muted)}
+
+/* Cards */
+.card{border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:30px;margin:32px 0}
 .card h2,.card h3{margin-top:0}
-.card.product{border-color:rgba(224,64,251,.35)}
-form.signup{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-form.signup input{flex:1 1 220px;min-width:0;padding:12px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font:inherit;font-size:15px}
+.card.product{position:relative;border:1px solid transparent;background:linear-gradient(var(--bg2),var(--bg2)) padding-box,linear-gradient(135deg,rgba(224,64,251,.7),rgba(34,211,238,.7)) border-box;box-shadow:0 20px 60px -30px rgba(224,64,251,.45)}
+.card.product h3{font-size:24px;color:#fff}
+form.signup{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+form.signup input{flex:1 1 220px;min-width:0;padding:13px 18px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font:inherit;font-size:15px}
+form.signup input:focus{outline:none;border-color:rgba(34,211,238,.6);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
 .signup-msg{font-size:14px;margin-top:10px;color:var(--muted);min-height:1em}
+.back{display:inline-block;margin:8px 0 24px;font-size:15px;text-decoration:none}
+
+/* Index */
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 32px}
 .filters a{font-size:13px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);text-decoration:none}
 .filters a.on{border-color:var(--cyan);color:var(--cyan)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding-bottom:48px}
-.entry{display:block;border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:24px;text-decoration:none;color:var(--text)}
-.entry:hover{border-color:rgba(34,211,238,.4)}
-.entry h2{font-size:20px;line-height:1.35;margin:10px 0 8px;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:8px 0 48px}
+.entry{display:block;border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:26px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .2s,box-shadow .2s}
+.entry:hover{border-color:rgba(34,211,238,.4);transform:translateY(-2px);box-shadow:0 18px 40px -24px rgba(34,211,238,.4)}
+.entry h2{font-size:21px;line-height:1.35;margin:12px 0 8px;color:#fff}
 .entry p{margin:0;color:var(--muted);font-size:15px}
 .empty{color:var(--muted);padding:24px 0 64px}
+
 footer{border-top:1px solid var(--line);padding:32px 0;margin-top:48px;font-size:13px;color:var(--muted)}
 footer .wrap{display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between;max-width:1040px}
 footer a{color:var(--muted);text-decoration:none;margin-right:16px}
@@ -188,10 +291,13 @@ footer .social{flex-basis:100%}
 footer .social a{margin-right:0}
 .follow{font-size:14px;color:var(--muted);margin:14px 0 0}
 .brand,.links a{white-space:nowrap}
-@media (max-width:600px){.links{gap:14px}.links .hide-sm{display:none}.links .btn{padding:8px 14px;font-size:11px}.brand span{display:none}header.hero{padding:48px 0 24px}}
+@media (max-width:600px){.links{gap:14px}.links .hide-sm{display:none}.links .btn{padding:8px 14px;font-size:11px}.brand span{display:none}header.hero{padding:44px 0 32px}article p,article li{font-size:17px}article p.intro{font-size:19px}article h2{margin-top:56px}.card{padding:24px}}
 `;
 
 const SIGNUP_SCRIPT = `
+(function(){var bar=document.querySelector('.progress'),art=document.querySelector('article');
+if(bar&&art){var f=function(){var r=art.getBoundingClientRect(),t=r.height-window.innerHeight;
+bar.style.width=Math.max(0,Math.min(1,t>0?-r.top/t:1))*100+'%';};window.addEventListener('scroll',f,{passive:true});f();}})();
 document.querySelectorAll('form.signup').forEach(function(form){
   form.addEventListener('submit', function(e){
     e.preventDefault();
@@ -287,25 +393,41 @@ export function renderArticle(a: Article): string {
     a.productName && a.productUrl
       ? `<section class="card product">
   <span class="tag">Take the next step</span>
-  <h3 style="margin:10px 0 8px">${esc(a.productName)}</h3>
+  <h3 style="margin:12px 0 8px">${esc(a.productName)}</h3>
   ${a.productPitch ? `<p style="margin:0 0 16px;color:var(--muted)">${esc(a.productPitch)}</p>` : ""}
-  <a class="btn gumroad-button" href="${esc(a.productUrl)}">Get ${esc(a.productName)}</a>
+  <a class="btn solid gumroad-button" href="${esc(a.productUrl)}">Get ${esc(a.productName)} →</a>
 </section>`
       : "";
 
-  const body = `<main class="wrap">
+  const { html, toc } = enhanceHtml(a.html);
+  const tocHtml =
+    toc.length >= 3
+      ? `<details class="toc" open>
+  <summary>In this article</summary>
+  <ol>${toc.map(t => `<li><a href="#${t.id}">${esc(t.text)}</a></li>`).join("")}</ol>
+</details>`
+      : "";
+
+  const body = `<div class="progress" aria-hidden="true"></div>
+<div class="hero-band"><div class="wrap">
 <header class="hero">
-  <a class="tag" href="/library?district=${a.district}" style="text-decoration:none">The Library · ${esc(district)}</a>
+  <div class="crumbs">
+    <a class="pill" href="/library">The Library</a>
+    <a class="pill alt" href="/library?district=${a.district}">${esc(district)}</a>
+  </div>
   <h1>${esc(a.title)}</h1>
   <p class="lede">${esc(a.description)}</p>
-  <div class="meta">${formatDate(a.date)} · ${a.readingMinutes} min read</div>
+  <div class="meta"><span>${formatDate(a.date)}</span><span>${a.readingMinutes} min read</span><span>The Digital City</span></div>
 </header>
+</div></div>
+<main class="wrap">
+${tocHtml}
 <article>
-${a.html}
+${html}
 </article>
 ${product}
 ${signupCard(`library:${a.slug}`)}
-<p><a href="/library">← Back to The Library</a></p>
+<a class="back" href="/library">← Back to The Library</a>
 </main>`;
 
   return layout({
@@ -365,12 +487,15 @@ ${shown
 </div>`
     : `<p class="empty">New breakdowns are on the way. Subscribe below to get the first one.</p>`;
 
-  const body = `<main class="wrap wide">
+  const body = `<div class="hero-band"><div class="wrap wide">
 <header class="hero" style="max-width:720px">
-  <span class="tag">The Digital City · The Library</span>
+  <div class="crumbs"><span class="pill">The Digital City · The Library</span></div>
   <h1>How online businesses actually work</h1>
-  <p class="lede">Plain-English breakdowns of how money moves on the internet: lead generation, content and affiliate sites, digital products, services and automation. No hype, just the mechanics.</p>
+  <p class="lede">Plain-English guides to making money online: affiliate marketing, semi-passive business ideas, and the tools and platforms worth using. No hype, just the mechanics.</p>
 </header>
+</div></div>
+<main class="wrap wide">
+<div style="height:28px"></div>
 ${filters}
 ${cards}
 <div style="max-width:720px">${signupCard("library:index")}</div>
