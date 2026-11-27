@@ -2,8 +2,8 @@
 title: "Affiliate Marketing in 2027: What's Changed and What Still Works"
 description: AI search, commission cuts and stricter Google rules reshaped affiliate marketing in 2026. What still works in 2027, five funnels to try, and how to start.
 district: attention-media
-date: 2026-11-30
-status: draft
+date: 2026-11-27
+status: published
 product_name: District Selector Worksheet
 product_url: https://buildyourdigitalcity.gumroad.com/l/district-selector
 product_pitch: Not sure affiliate is the right district for you? Score all five districts against your skills, interests and resources in about fifteen minutes, then get one specific first move for the winner.
@@ -46,8 +46,6 @@ For affiliates, that means: **disclose every affiliate link clearly, and never f
 ### Reviews built on real use
 
 The most durable affiliate content is the kind AI can't easily copy: what actually happened when *you* used the thing. Screenshots, what surprised you, what annoyed you, who it's wrong for. This is also exactly what Google says it wants.
-
-> ✍️ **Add your own example here:** one tool or product you've used for a while, and one thing about it you'd only know from using it.
 
 ### Tools and software over physical products
 
@@ -131,8 +129,6 @@ It's strongest in visual, planning-heavy topics: travel, home, recipes, personal
 
 Pick one funnel and run it for three months before adding another. A good combination for most beginners is **social to site plus email**: video gets you discovered, the article earns the click, and the email list makes sure you don't lose people once they've found you.
 
-> ✍️ **Optional:** mention which funnel you use yourself, e.g. your Pinterest-to-travel-site setup, and one thing you've learned from running it.
-
 ## Affiliate platforms by niche
 
 You don't have to sign up with every company one by one. **Affiliate networks** sit in the middle: you join once, then apply to many brands' programs from one dashboard, with one payout. Some companies also run their own **direct programs**, which can pay better but mean another login and another payout threshold.
@@ -153,8 +149,6 @@ A few tips that apply to every niche:
 - **Each brand approves you separately.** Joining a network doesn't mean you can promote everything on it.
 - **Compare commission, cookie length and payout threshold** before you commit. They vary by brand, change often, and are listed in each program's dashboard.
 - **Don't spread yourself thin.** Two or three programs you understand well beat twenty you barely use.
-
-> ✍️ **Optional:** if you use Stay22 or Travelpayouts on your own travel sites, a sentence on how you set it up would make this section much stronger.
 
 ## How to start affiliate marketing in 2027
 
