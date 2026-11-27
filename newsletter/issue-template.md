@@ -1,7 +1,9 @@
 # Weekly newspaper issue — fill-in template
 
-Copy this into a new Kit broadcast each Tuesday. Fill in the four sections,
-delete these instructions, and schedule it for Thursday morning.
+Draft the issue here each Tuesday, then put it into Hostinger Reach: copy last
+week's campaign (or start from the "The Digital City Times - weekly issue"
+template, also in `newsletter/reach-template.html`), replace the bracketed
+placeholders, send yourself a test, and send it by hand on Thursday.
 Target: 300–450 words, about 1 hour.
 
 **Name:** still to decide (working ideas: *The Digital City Times*,

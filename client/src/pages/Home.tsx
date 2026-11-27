@@ -13,7 +13,7 @@
  */
 
 import { motion, type Transition, type Variants } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -26,11 +26,11 @@ import {
   Sparkles,
   Mail,
   Download,
-  CheckCircle,
   ExternalLink,
   type LucideIcon,
 } from "lucide-react";
 import { SOCIALS } from "@shared/socials";
+import { REACH_FORM_ID } from "@shared/reach";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -211,70 +211,28 @@ function NavBar() {
 }
 
 function EmailCapture({ variant = "hero" }: { variant?: "hero" | "footer" }) {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const subscribeMutation = trpc.subscribe.join.useMutation();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || subscribeMutation.isPending) return;
-
-    try {
-      const result = await subscribeMutation.mutateAsync({
-        email,
-        source: variant === "footer" ? "footer_form" : "hero_form",
+  // Reach's embed script (loaded in index.html) turns this div into the
+  // Hostinger Reach signup form and fires "reach:form-submitted" on success.
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onSubmitted = () =>
+      toast.success("Welcome to The Digital City!", {
+        description: "You're on the list. Watch your inbox for the next issue.",
       });
-      setSubmitted(true);
-      setEmail("");
-      if (result.isNew) {
-        toast.success("Welcome to The Digital City!", {
-          description: "Check your email to confirm and grab your free guide.",
-        });
-      } else {
-        toast.info("You're already on the list!", {
-          description: "Check your inbox — your guide is waiting there.",
-        });
-      }
-      setTimeout(() => setSubmitted(false), 4000);
-    } catch (error) {
-      console.error("Subscription error:", error);
-      toast.error("Subscription failed", {
-        description: "Please try again.",
-      });
-    }
-  };
+    el.addEventListener("reach:form-submitted", onSubmitted);
+    return () => el.removeEventListener("reach:form-submitted", onSubmitted);
+  }, []);
 
   return (
-    <div className="w-full max-w-md">
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
-          aria-label="Email address"
-          autoComplete="email"
-          required
-          className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-400/50 focus:ring-1 focus:ring-cyan-400/20 transition-all"
-        />
-        <button
-          type="submit"
-          disabled={submitted || subscribeMutation.isPending}
-          className="btn-neon px-6 py-3 text-sm whitespace-nowrap disabled:opacity-50 flex items-center gap-2"
-        >
-          {submitted ? (
-            <>
-              <CheckCircle size={16} />
-              Confirmed!
-            </>
-          ) : subscribeMutation.isPending ? (
-            "Joining..."
-          ) : (
-            "Join Free"
-          )}
-        </button>
-      </form>
-    </div>
+    <div
+      ref={ref}
+      className="w-full max-w-md min-h-[52px]"
+      data-reach-form={REACH_FORM_ID}
+      data-variant={variant}
+      aria-label="Newsletter signup"
+    />
   );
 }
 

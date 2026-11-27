@@ -26,6 +26,7 @@ import type { Express, Response } from "express";
 import { marked } from "marked";
 import { SOCIALS } from "../shared/socials";
 import { BRAND, SITE_URL, jsonLdScript, siteGraph, webPageNode } from "./brand";
+import { REACH_EMBED_SRC, REACH_FORM_ID } from "../shared/reach";
 
 export { SITE_URL };
 
@@ -274,6 +275,7 @@ article hr{border:0;height:1px;background:var(--line);margin:56px 0}
 form.signup{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 form.signup input{flex:1 1 220px;min-width:0;padding:13px 18px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font:inherit;font-size:15px}
 form.signup input:focus{outline:none;border-color:rgba(34,211,238,.6);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+.reach-form{margin-top:18px;min-height:52px}
 .signup-msg{font-size:14px;margin-top:10px;color:var(--muted);min-height:1em}
 .back{display:inline-block;margin:8px 0 24px;font-size:15px;text-decoration:none}
 
@@ -302,17 +304,10 @@ const SIGNUP_SCRIPT = `
 (function(){var bar=document.querySelector('.progress'),art=document.querySelector('article');
 if(bar&&art){var f=function(){var r=art.getBoundingClientRect(),t=r.height-window.innerHeight;
 bar.style.width=Math.max(0,Math.min(1,t>0?-r.top/t:1))*100+'%';};window.addEventListener('scroll',f,{passive:true});f();}})();
-document.querySelectorAll('form.signup').forEach(function(form){
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var msg = form.parentNode.querySelector('.signup-msg');
-    var email = form.querySelector('input[type=email]').value;
-    var btn = form.querySelector('button'); btn.disabled = true;
-    fetch('/api/trpc/subscribe.join', {method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({json:{email: email, source: form.dataset.source || 'library'}})})
-      .then(function(r){ if(!r.ok) throw new Error(); msg.textContent = "You're in. Check your inbox to confirm."; form.reset(); })
-      .catch(function(){ msg.textContent = 'Something went wrong. Please try again.'; })
-      .finally(function(){ btn.disabled = false; });
+document.querySelectorAll('[data-reach-form]').forEach(function(el){
+  el.addEventListener('reach:form-submitted', function(){
+    var msg = el.parentNode.querySelector('.signup-msg');
+    if (msg) msg.textContent = "You're in. Watch your inbox for the next issue.";
   });
 });
 `;
@@ -327,10 +322,7 @@ function signupCard(source: string): string {
   return `<section class="card">
   <h3>Get the next one in your inbox</h3>
   <p style="margin:0;color:var(--muted)">One clear breakdown of how an online business really works, every week. No hype. Unsubscribe anytime.</p>
-  <form class="signup" data-source="${esc(source)}">
-    <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address">
-    <button class="btn" type="submit">Subscribe</button>
-  </form>
+  <div class="reach-form" data-reach-form="${REACH_FORM_ID}" data-source="${esc(source)}"></div>
   <div class="signup-msg" role="status"></div>
   <p class="follow">Or follow along: ${socialLinks()}</p>
 </section>`;
@@ -394,6 +386,7 @@ ${opts.body}
   <div class="social">${socialLinks()} · <a href="mailto:${BRAND.email}">${BRAND.email}</a></div>
 </div></footer>
 <script>${SIGNUP_SCRIPT}</script>
+<script defer src="${REACH_EMBED_SRC}"></script>
 <script defer src="/webmcp.js"></script>
 <script defer src="https://gumroad.com/js/gumroad.js"></script>
 </body>
