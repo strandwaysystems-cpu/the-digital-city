@@ -57,4 +57,16 @@ describe("mapGumroadProduct", () => {
     });
     expect(product?.summary.length).toBeLessThanOrEqual(160);
   });
+
+  it("does not double the currency symbol on non-USD prices", () => {
+    const product = mapGumroadProduct({
+      name: "Worksheet",
+      short_url: "https://example.gumroad.com/l/w",
+      price: 900,
+      currency: "cad",
+      formatted_price: "CA$9",
+    });
+    expect(product?.formattedPrice).toBe("CA$9");
+    expect(product?.currency).toBe("CAD");
+  });
 });

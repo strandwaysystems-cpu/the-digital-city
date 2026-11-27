@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
+import { renderSpaShell } from "../agent";
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
@@ -58,10 +59,21 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
+  // index: false so "/" goes through renderSpaShell like every other page.
+  app.use(express.static(distPath, { index: false }));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+  // Everything else is the React app. renderSpaShell adds per-page head tags,
+  // JSON-LD and readable fallback content, and returns 404 for unknown paths.
+  const indexPath = path.resolve(distPath, "index.html");
+  let template: string | null = null;
+  app.use("*", async (req, res) => {
+    try {
+      template ??= fs.readFileSync(indexPath, "utf-8");
+      const { status, html } = await renderSpaShell(template, req.originalUrl.split("?")[0]);
+      res.status(status).type("html").set("Cache-Control", "public, max-age=0").send(html);
+    } catch (error) {
+      console.error("[spa] render failed, sending plain index.html:", error);
+      res.sendFile(indexPath);
+    }
   });
 }

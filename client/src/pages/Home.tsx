@@ -861,6 +861,8 @@ function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Home</Link>
             <a href="/library" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Library</a>
+            <a href="/about" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">About</a>
+            <a href="/contact" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Contact</a>
             <Link href="/store" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Store</Link>
             <a href="#districts" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Districts</a>
             <a href="#book" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Book</a>
@@ -873,6 +875,9 @@ function Footer() {
                 {s.name}
               </a>
             ))}
+            <a href="mailto:support@buildyourdigitalcity.com" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">
+              support@buildyourdigitalcity.com
+            </a>
           </div>
         </div>
       </div>
