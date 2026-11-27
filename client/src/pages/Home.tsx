@@ -30,6 +30,7 @@ import {
   ExternalLink,
   type LucideIcon,
 } from "lucide-react";
+import { SOCIALS } from "@shared/socials";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -857,7 +858,7 @@ function Footer() {
             <img src={LOGO} alt="The Digital City" className="w-6 h-6 rounded-md" />
             <span className="text-sm font-medium text-white/40">Strandway Systems · 2026</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Home</Link>
             <a href="/library" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Library</a>
             <Link href="/store" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Store</Link>
@@ -865,6 +866,13 @@ function Footer() {
             <a href="#book" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Book</a>
             <Link href="/privacy" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Privacy</Link>
             <Link href="/terms" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Terms</Link>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-5">
+            {SOCIALS.map(s => (
+              <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium" aria-label={`The Digital City on ${s.name} (${s.handle})`}>
+                {s.name}
+              </a>
+            ))}
           </div>
         </div>
       </div>

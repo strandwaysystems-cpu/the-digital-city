@@ -24,6 +24,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { Express, Response } from "express";
 import { marked } from "marked";
+import { SOCIALS } from "../shared/socials";
 
 export const SITE_URL = (process.env.SITE_URL || "https://buildyourdigitalcity.com").replace(/\/$/, "");
 
@@ -183,6 +184,9 @@ form.signup input{flex:1 1 220px;min-width:0;padding:12px 16px;border-radius:999
 footer{border-top:1px solid var(--line);padding:32px 0;margin-top:48px;font-size:13px;color:var(--muted)}
 footer .wrap{display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between;max-width:1040px}
 footer a{color:var(--muted);text-decoration:none;margin-right:16px}
+footer .social{flex-basis:100%}
+footer .social a{margin-right:0}
+.follow{font-size:14px;color:var(--muted);margin:14px 0 0}
 .brand,.links a{white-space:nowrap}
 @media (max-width:600px){.links{gap:14px}.links .hide-sm{display:none}.links .btn{padding:8px 14px;font-size:11px}.brand span{display:none}header.hero{padding:48px 0 24px}}
 `;
@@ -203,6 +207,12 @@ document.querySelectorAll('form.signup').forEach(function(form){
 });
 `;
 
+function socialLinks(): string {
+  return SOCIALS.map(
+    x => `<a href="${x.url}" target="_blank" rel="noopener noreferrer" aria-label="The Digital City on ${x.name} (${x.handle})">${x.name}</a>`
+  ).join(" · ");
+}
+
 function signupCard(source: string): string {
   return `<section class="card">
   <h3>Get the next one in your inbox</h3>
@@ -212,6 +222,7 @@ function signupCard(source: string): string {
     <button class="btn" type="submit">Subscribe</button>
   </form>
   <div class="signup-msg" role="status"></div>
+  <p class="follow">Or follow along: ${socialLinks()}</p>
 </section>`;
 }
 
@@ -262,6 +273,7 @@ ${opts.body}
 <footer><div class="wrap">
   <div>© ${new Date().getFullYear()} The Digital City</div>
   <div><a href="/library">Library</a><a href="/store">Store</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+  <div class="social">${socialLinks()}</div>
 </div></footer>
 <script>${SIGNUP_SCRIPT}</script>
 <script defer src="https://gumroad.com/js/gumroad.js"></script>
@@ -317,6 +329,7 @@ ${signupCard(`library:${a.slug}`)}
         "@type": "Organization",
         name: "The Digital City",
         logo: { "@type": "ImageObject", url: `${SITE_URL}/logo.jpg` },
+        sameAs: SOCIALS.map(x => x.url),
       },
     },
   });
