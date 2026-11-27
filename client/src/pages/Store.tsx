@@ -220,6 +220,10 @@ export default function Store() {
             <Link href="/" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
               Home
             </Link>
+            {/* Plain <a>: /library is server-rendered, not a client route. */}
+            <a href="/library" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+              Library
+            </a>
             <Link href="/store" className="text-xs text-cyan-400 transition-colors hidden sm:block font-medium tracking-wide uppercase">
               Store
             </Link>

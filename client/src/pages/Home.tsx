@@ -190,6 +190,10 @@ function NavBar() {
           <a href="#book" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
             Book
           </a>
+          {/* Plain <a>: /library is server-rendered, not a client route. */}
+          <a href="/library" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+            Library
+          </a>
           <Link href="/store" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
             Store
           </Link>
@@ -855,6 +859,7 @@ function Footer() {
           </div>
           <div className="flex items-center gap-6">
             <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Home</Link>
+            <a href="/library" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Library</a>
             <Link href="/store" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Store</Link>
             <a href="#districts" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Districts</a>
             <a href="#book" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">Book</a>

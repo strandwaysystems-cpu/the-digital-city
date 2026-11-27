@@ -8,6 +8,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { registerLibraryRoutes } from "../library";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -52,6 +53,9 @@ async function startServer() {
       createContext,
     })
   );
+  // The Library, robots.txt and sitemap.xml are server-rendered so search
+  // engines see real content; they must come before the SPA fallback.
+  registerLibraryRoutes(app);
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
