@@ -25,8 +25,9 @@ import path from "node:path";
 import type { Express, Response } from "express";
 import { marked } from "marked";
 import { SOCIALS } from "../shared/socials";
+import { BRAND, SITE_URL, jsonLdScript, siteGraph, webPageNode } from "./brand";
 
-export const SITE_URL = (process.env.SITE_URL || "https://buildyourdigitalcity.com").replace(/\/$/, "");
+export { SITE_URL };
 
 export const DISTRICTS: Record<string, string> = {
   "intelligent-autonomous": "Intelligent & Autonomous",
@@ -48,6 +49,8 @@ export interface Article {
   productUrl?: string;
   productPitch?: string;
   html: string;
+  /** The article body as written (Markdown), served to agents that ask for it. */
+  markdown: string;
   readingMinutes: number;
 }
 
@@ -81,6 +84,7 @@ export function parseArticle(slug: string, source: string): Article | null {
     productUrl: data.product_url || undefined,
     productPitch: data.product_pitch || undefined,
     html: marked.parse(body, { async: false }) as string,
+    markdown: body.trim(),
     readingMinutes: Math.max(1, Math.round(words / 220)),
   };
 }
@@ -332,13 +336,18 @@ function signupCard(source: string): string {
 </section>`;
 }
 
-function layout(opts: {
+export function layout(opts: {
   title: string;
   description: string;
   canonicalPath: string;
   body: string;
   ogType?: string;
   jsonLd?: object;
+  /** Path of this page's Markdown version, advertised to agents. */
+  markdownPath?: string;
+  /** Extra schema.org nodes for the page; Organization and WebSite are always included. */
+  graph?: object[];
+  nav?: "library" | "none";
 }): string {
   const url = `${SITE_URL}${opts.canonicalPath}`;
   return `<!doctype html>
@@ -349,6 +358,8 @@ function layout(opts: {
 <title>${esc(opts.title)}</title>
 <meta name="description" content="${esc(opts.description)}">
 <link rel="canonical" href="${esc(url)}">
+${opts.markdownPath ? `<link rel="alternate" type="text/markdown" href="${esc(opts.markdownPath)}">` : ""}
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
 <meta property="og:type" content="${opts.ogType || "website"}">
 <meta property="og:title" content="${esc(opts.title)}">
 <meta property="og:description" content="${esc(opts.description)}">
@@ -364,13 +375,14 @@ function layout(opts: {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>${STYLES}</style>
-${opts.jsonLd ? `<script type="application/ld+json">${JSON.stringify(opts.jsonLd).replace(/</g, "\\u003c")}</script>` : ""}
+${jsonLdScript(siteGraph([webPageNode(opts.canonicalPath.split("?")[0], opts.title, opts.description), ...(opts.graph || [])]))}
+${opts.jsonLd ? jsonLdScript(opts.jsonLd) : ""}
 </head>
 <body>
 <nav><div class="wrap">
   <a class="brand" href="/" aria-label="The Digital City home"><img src="/logo.jpg" alt=""><span>The Digital City</span></a>
   <div class="links">
-    <a class="on" href="/library">Library</a>
+    <a${opts.nav === "none" ? "" : ' class="on"'} href="/library">Library</a>
     <a class="hide-sm" href="/store">Store</a>
     <a class="btn" href="/#subscribe">Get Started</a>
   </div>
@@ -378,10 +390,11 @@ ${opts.jsonLd ? `<script type="application/ld+json">${JSON.stringify(opts.jsonLd
 ${opts.body}
 <footer><div class="wrap">
   <div>© ${new Date().getFullYear()} The Digital City</div>
-  <div><a href="/library">Library</a><a href="/store">Store</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
-  <div class="social">${socialLinks()}</div>
+  <div><a href="/library">Library</a><a href="/store">Store</a><a href="/about">About</a><a href="/contact">Contact</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></div>
+  <div class="social">${socialLinks()} · <a href="mailto:${BRAND.email}">${BRAND.email}</a></div>
 </div></footer>
 <script>${SIGNUP_SCRIPT}</script>
+<script defer src="/webmcp.js"></script>
 <script defer src="https://gumroad.com/js/gumroad.js"></script>
 </body>
 </html>`;
@@ -434,6 +447,7 @@ ${signupCard(`library:${a.slug}`)}
     title: `${a.title} | The Digital City Library`,
     description: a.description,
     canonicalPath: `/library/${a.slug}`,
+    markdownPath: `/library/${a.slug}.md`,
     ogType: "article",
     body,
     jsonLd: {
@@ -508,6 +522,7 @@ ${cards}
     description:
       "Plain-English breakdowns of how online businesses make money: lead generation, affiliate and content sites, digital products, services and automation.",
     canonicalPath: active ? `/library?district=${active}` : "/library",
+    markdownPath: "/library.md",
     body,
     jsonLd: {
       "@context": "https://schema.org",
@@ -521,7 +536,7 @@ ${cards}
 
 // ─── robots.txt + sitemap.xml ─────────────────────────────────────────────────
 
-const STATIC_PAGES = ["/", "/store", "/library", "/privacy", "/terms"];
+const STATIC_PAGES = ["/", "/store", "/library", "/about", "/contact", "/privacy", "/terms"];
 
 export function renderSitemap(articles: Article[]): string {
   const urls = [
@@ -536,7 +551,10 @@ ${urls.join("\n")}
 }
 
 export function renderRobots(): string {
+  // Content-Signal (https://contentsignals.org): search engines and AI
+  // assistants may index and quote the site; it may not be used to train models.
   return `User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 Disallow: /api/
 Disallow: /checkout/
@@ -549,6 +567,40 @@ function sendHtml(res: Response, html: string, status = 200) {
   res.status(status).type("html").set("Cache-Control", "public, max-age=300").send(html);
 }
 
+export function sendMarkdown(res: Response, md: string, status = 200) {
+  res.status(status).type("text/markdown; charset=utf-8").set("Vary", "Accept").send(md);
+}
+
+export function articleMarkdown(a: Article): string {
+  const lines = [
+    `# ${a.title}`,
+    "",
+    `> ${a.description}`,
+    "",
+    `Published ${a.date} · ${DISTRICTS[a.district]} · ${a.readingMinutes} min read · ${SITE_URL}/library/${a.slug}`,
+    "",
+    a.markdown,
+  ];
+  if (a.productName && a.productUrl) {
+    lines.push("", "## Recommended next step", "", `[${a.productName}](${a.productUrl})${a.productPitch ? `: ${a.productPitch}` : ""}`);
+  }
+  return lines.join("\n") + "\n";
+}
+
+export function libraryIndexMarkdown(articles: Article[]): string {
+  const lines = [
+    "# The Library: How Online Businesses Actually Work",
+    "",
+    `> Plain-English guides from ${BRAND.name} on making money online: affiliate marketing, semi-passive business ideas, and the tools and platforms worth using.`,
+    "",
+  ];
+  for (const a of articles) {
+    lines.push(`- [${a.title}](${SITE_URL}/library/${a.slug}.md): ${a.description} (${a.date}, ${DISTRICTS[a.district]})`);
+  }
+  if (!articles.length) lines.push("No articles yet.");
+  return lines.join("\n") + "\n";
+}
+
 export function registerLibraryRoutes(app: Express) {
   app.get("/robots.txt", (_req, res) => {
     res.type("text/plain").send(renderRobots());
@@ -556,6 +608,16 @@ export function registerLibraryRoutes(app: Express) {
 
   app.get("/sitemap.xml", (_req, res) => {
     res.type("application/xml").send(renderSitemap(visibleArticles()));
+  });
+
+  app.get("/library.md", (_req, res) => {
+    sendMarkdown(res, libraryIndexMarkdown(visibleArticles()));
+  });
+
+  app.get(/^\/library\/([a-z0-9-]+)\.md$/, (req, res) => {
+    const article = visibleArticles().find(a => a.slug === req.params[0]);
+    if (!article) return res.status(404).type("text/plain").send("Not found\n");
+    sendMarkdown(res, articleMarkdown(article));
   });
 
   app.get(["/library", "/library/"], (req, res) => {

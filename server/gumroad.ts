@@ -15,6 +15,8 @@ export interface GumroadProduct {
   name: string;
   formattedPrice: string;
   priceCents: number;
+  /** ISO 4217 code in upper case, e.g. "CAD". Defaults to "USD" if Gumroad omits it. */
+  currency: string;
   isFree: boolean;
   shortUrl: string;
   thumbnailUrl: string | null;
@@ -61,9 +63,11 @@ export function mapGumroadProduct(raw: RawGumroadProduct): GumroadProduct | null
   if (isFree) {
     formattedPrice = "Free";
   } else if (raw.formatted_price) {
-    formattedPrice = raw.formatted_price.startsWith("$")
-      ? raw.formatted_price
-      : `$${raw.formatted_price}`;
+    // Gumroad already includes the currency symbol for non-USD prices
+    // (e.g. "CA$9" / "CAD$9"); only bare numbers like "9" need a "$".
+    formattedPrice = /^\d/.test(raw.formatted_price)
+      ? `$${raw.formatted_price}`
+      : raw.formatted_price;
   } else {
     const dollars = priceCents / 100;
     formattedPrice = Number.isInteger(dollars) ? `$${dollars}` : `$${dollars.toFixed(2)}`;
@@ -78,6 +82,7 @@ export function mapGumroadProduct(raw: RawGumroadProduct): GumroadProduct | null
     name: raw.name,
     formattedPrice,
     priceCents,
+    currency: (raw.currency || "usd").toUpperCase(),
     isFree,
     shortUrl: raw.short_url,
     thumbnailUrl: raw.thumbnail_url || raw.preview_url || null,

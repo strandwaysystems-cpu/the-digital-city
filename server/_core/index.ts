@@ -9,6 +9,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { registerLibraryRoutes } from "../library";
+import { registerAgentRoutes } from "../agent";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -55,6 +56,9 @@ async function startServer() {
   );
   // The Library, robots.txt and sitemap.xml are server-rendered so search
   // engines see real content; they must come before the SPA fallback.
+  // Agent routes first: their middleware adds Link headers and rewrites
+  // Accept: text/markdown requests before the page routes run.
+  registerAgentRoutes(app);
   registerLibraryRoutes(app);
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
