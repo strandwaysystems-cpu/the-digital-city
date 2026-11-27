@@ -1,6 +1,6 @@
 ---
 title: "Affiliate Marketing in 2027: What's Changed and What Still Works"
-description: AI search, commission cuts and stricter Google rules reshaped affiliate marketing in 2026. Here's what still works in 2027 and how to start without getting burned.
+description: AI search, commission cuts and stricter Google rules reshaped affiliate marketing in 2026. What still works in 2027, five funnels to try, and how to start.
 district: attention-media
 date: 2026-11-30
 status: draft
@@ -13,7 +13,7 @@ Affiliate marketing is simple on paper. You recommend a product, someone buys it
 
 That basic deal hasn't changed. What changed in 2026 is almost everything around it: how people find recommendations, how much the biggest programs pay, and what Google is willing to rank. If you learned affiliate marketing from a video made a few years ago, some of that advice will now work against you.
 
-Here's what's different going into 2027, what still works, and how we'd start today.
+Here's what's different going into 2027, what still works, five affiliate funnels worth building, and how we'd start today.
 
 ## What changed in 2026
 
@@ -64,6 +64,74 @@ TikTok, Instagram Reels and YouTube Shorts are now where many people first disco
 ### A small number of programs you trust
 
 Instead of joining twenty programs, pick a handful of products you'd recommend even if they paid nothing. Prefer programs that pay recurring commissions, have reasonable cookie windows (how long after a click a sale still counts) and a track record of treating affiliates fairly.
+
+## Five affiliate funnels that work in 2027
+
+A funnel is just the path someone takes from first seeing you to clicking your link and buying. Most beginners only have one step: a link in a bio, hoping someone taps it. The funnels below add the steps that build trust in between.
+
+| Funnel | Path | Best for | Speed |
+|---|---|---|---|
+| Search review | Google → review or comparison → affiliate link | People already deciding what to buy | Slow to start, steady once it ranks |
+| Social to site | Short video → article → affiliate link | Tools and products that are easy to show | Fast to test, needs regular posting |
+| Email | Free guide → email series → recommendation | Higher-priced or recurring products | Medium, compounds over time |
+| Tool stack page | "Tools I use" page → affiliate links | Anyone building in public | Low effort, works alongside the others |
+| Pinterest | Pin → blog post → affiliate link | Travel, home, food, lifestyle, planning | Slow, but pins keep working for months |
+
+### 1. The search review funnel
+
+**Google search → review or comparison article → affiliate link**
+
+Someone searches "Kit vs Beehiiv" or "best platform to sell digital products" because they're about to choose. Your article helps them decide, and your link is right there when they do.
+
+This is the classic affiliate funnel, and it's the one most affected by AI answers. It still works when the article offers what an AI summary can't: your own screenshots, your actual results, and a clear "pick this one if…, pick that one if…".
+
+**Tip:** "X vs Y" and "best X for [specific person]" articles convert far better than general explainers, because the reader is already close to buying.
+
+### 2. The social-to-site funnel
+
+**Short video (TikTok, Reels, Shorts) → full article → affiliate link**
+
+The video does the discovering: a quick demo, a result, or "three tools I use every day." It doesn't try to sell. It points to a full article that gives the details, the honest downsides and the link.
+
+Why not link straight to the product? Because the article is yours. It can collect email signups, rank on Google later and link to several products. A product page does none of that for you.
+
+**Tip:** Turn one article into three videos, each covering a single point from it. That's a week of posts from one piece of writing.
+
+### 3. The email funnel
+
+**Free guide or checklist → short email series → recommendation**
+
+Someone signs up for something free and useful, like a starter checklist. Over the next few emails you teach, share what you use, and recommend one product when it naturally fits.
+
+This is the slowest to set up but the most valuable over time. The subscriber stays on your list, so every future recommendation reaches them directly, with no algorithm in between. It works especially well for recurring software, where one sign-up can pay you every month.
+
+**Tip:** Recommend one thing per email, and only after you've given something useful first.
+
+### 4. The tool stack page
+
+**"The tools I use" page → affiliate links**
+
+One page on your site listing everything you actually use to run your business or hobby, with a sentence on why you use each one. Link it from your social bios, your email footer and the end of your articles.
+
+It's low effort, it stays useful for years, and it converts well because it's personal: these aren't "the ten best tools," they're *your* tools.
+
+**Tip:** Update it every time you switch tools, and say so. "I moved from X to Y in March because…" builds more trust than a perfect list.
+
+### 5. The Pinterest funnel
+
+**Pin → blog post → affiliate link**
+
+Pinterest works more like a visual search engine than a social network. People search it to plan trips, projects and purchases, and a good pin can keep sending visitors for months.
+
+It's strongest in visual, planning-heavy topics: travel, home, recipes, personal finance, productivity. Each pin points to a blog post, and the post carries the affiliate links (booking sites, gear, tools).
+
+**Tip:** Make several pin designs for each post, with different images and headlines. Pinterest rewards fresh pins, even when they point to the same page.
+
+### Which one should you start with?
+
+Pick one funnel and run it for three months before adding another. A good combination for most beginners is **social to site plus email**: video gets you discovered, the article earns the click, and the email list makes sure you don't lose people once they've found you.
+
+> ✍️ **Optional:** mention which funnel you use yourself, e.g. your Pinterest-to-travel-site setup, and one thing you've learned from running it.
 
 ## How to start affiliate marketing in 2027
 
