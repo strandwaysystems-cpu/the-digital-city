@@ -13,7 +13,7 @@ Affiliate marketing is simple on paper. You recommend a product, someone buys it
 
 That basic deal hasn't changed. What changed in 2026 is almost everything around it: how people find recommendations, how much the biggest programs pay, and what Google is willing to rank. If you learned affiliate marketing from a video made a few years ago, some of that advice will now work against you.
 
-Here's what's different going into 2027, what still works, five affiliate funnels worth building, and how we'd start today.
+Here's what's different going into 2027, what still works, five affiliate funnels worth building, which platforms to use for your niche, and how we'd start today.
 
 ## What changed in 2026
 
@@ -133,9 +133,32 @@ Pick one funnel and run it for three months before adding another. A good combin
 
 > ✍️ **Optional:** mention which funnel you use yourself, e.g. your Pinterest-to-travel-site setup, and one thing you've learned from running it.
 
+## Affiliate platforms by niche
+
+You don't have to sign up with every company one by one. **Affiliate networks** sit in the middle: you join once, then apply to many brands' programs from one dashboard, with one payout. Some companies also run their own **direct programs**, which can pay better but mean another login and another payout threshold.
+
+Start by picking your niche, then the platform that's strongest in it.
+
+| Niche | Platforms to look at | Good to know |
+|---|---|---|
+| **Travel** | Stay22, Travelpayouts | Stay22 focuses on hotels and stays, with maps and widgets that show options near the place you're writing about. Travelpayouts brings many travel brands together: flights, tours, insurance, car rental and more. |
+| **Software and SaaS** | PartnerStack, Impact | PartnerStack is built for software companies and is known for recurring commissions on subscriptions. Impact hosts many software and tech brands alongside other industries. Many tools also run their own programs, so check the footer of any tool you use for "Affiliates" or "Partners". |
+| **Online shopping and lifestyle** | Amazon Associates, Awin, CJ, Rakuten | Amazon is the easiest to start with but has the least control (see the commission cuts above). Awin absorbed ShareASale in 2025 and covers thousands of retail and lifestyle brands. CJ and Rakuten lean toward bigger brands and have stricter approval. |
+| **Digital products and courses** | Digistore24, ClickBank, Gumroad | Marketplaces of courses, ebooks and programs, often with high percentage commissions. Quality varies a lot: only promote things you've looked at closely. Many Gumroad creators also let you become an affiliate of their products. |
+| **Personal finance** | Impact, CJ, Awin | Banks, budgeting apps and investing platforms often pay well per sign-up, but approval is strict and the rules on what you can claim are tighter. Be careful and accurate. |
+
+A few tips that apply to every niche:
+
+- **You usually need a live site or account to apply.** Most networks review where you'll promote. Publish a handful of genuine articles or posts first.
+- **Each brand approves you separately.** Joining a network doesn't mean you can promote everything on it.
+- **Compare commission, cookie length and payout threshold** before you commit. They vary by brand, change often, and are listed in each program's dashboard.
+- **Don't spread yourself thin.** Two or three programs you understand well beat twenty you barely use.
+
+> ✍️ **Optional:** if you use Stay22 or Travelpayouts on your own travel sites, a sentence on how you set it up would make this section much stronger.
+
 ## How to start affiliate marketing in 2027
 
-1. **Pick a narrow topic you know firsthand.** "Tools for running a one-person online business" beats "technology."
+1. **Pick a narrow topic you know firsthand.** "Tools for running a one-person online business" beats "technology." Then pick the platform that's strongest in it, from the table above.
 2. **List the products you already use and like.** These are your first reviews. Check which ones have affiliate programs.
 3. **Build on land you own.** A simple website for long-form reviews and comparisons, plus an email list from day one.
 4. **Use social video to get discovered.** Each article becomes two or three short clips pointing back to it.
@@ -157,3 +180,5 @@ Affiliate marketing is one of five ways to build online. If you're not sure it's
 - Google Search Central: [Spam policies for Google web search](https://developers.google.com/search/docs/essentials/spam-policies)
 - FTC: [Consumer Reviews and Testimonials Rule, questions and answers](https://www.ftc.gov/business-guidance/resources/consumer-reviews-testimonials-rule-questions-answers)
 - Search Engine Land: [FTC warning letters on fake reviews and testimonials](https://searchengineland.com/ftc-fake-reviews-testimonials-445209)
+- Awin: [ShareASale to Awin upgrade](https://www.awin.com/us/news-and-events/awin-news/shareasale-to-awin-upgrade)
+- PartnerStack: [For partners and publishers](https://partnerstack.com/marketplace/website-owners)
