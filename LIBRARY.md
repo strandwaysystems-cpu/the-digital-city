@@ -59,17 +59,31 @@ each points to one product.
 
 | Week of | Topic (newsletter + Library article) | District | Product link |
 |---|---|---|---|
-| Nov 30 | How affiliate websites actually make money | Attention & Media | Owner vs Renter Assessment |
-| Dec 7 | How lead generation businesses get paid (pay-per-lead vs retainer) | Attention & Media | Owner vs Renter Assessment |
-| Dec 14 | Selling digital products: what really happens between "buy" and "download" | E-Commerce & Retail | Portfolio Blueprint, once live on Gumroad |
-| Dec 21 | Year-end: the owner-or-renter audit of your own income streams | City Planning | Owner vs Renter Assessment |
+| Nov 30 | How affiliate websites actually make money | Attention & Media | District Selector Worksheet (CA$9) |
+| Dec 7 | How lead generation businesses get paid (pay-per-lead vs retainer) | Attention & Media | District Selector Worksheet (CA$9) |
+| Dec 14 | Selling digital products: what really happens between "buy" and "download" | E-Commerce & Retail | The 90-Day Digital Property Builder (CA$79) |
+| Dec 21 | Year-end: the owner-or-renter audit of your own income streams | City Planning | Owner vs. Renter Self-Assessment (CA$17) |
 
 The first article, "Owner or Renter? The One Question to Ask About Any Online
 Income Stream", is already published and sets up the framework the later
 articles refer back to.
 
-## Revenue ladder
+## Product ladder (Gumroad, as of 2026-11-27)
 
-Free newsletter → $9 Owner vs Renter Assessment → $17 Portfolio Blueprint →
-$39 The Digital City ebook. Only the $9 assessment is on Gumroad today.
-Getting the $17 and $39 products live is the biggest single lever for revenue.
+All nine products are published. Prices are in CAD.
+
+| Step | Product | Price |
+|---|---|---|
+| Entry | The Invisible Economy | Pay what you want (suggested $1) |
+| Low-cost tools | The Digital City Quick Reference | $7 |
+| | District Selector Worksheet | $9 |
+| | Owner vs. Renter Self-Assessment | $17 |
+| | The Digital City Prompt Kit | $27 |
+| Core | The 90-Day Digital Property Builder | $79 |
+| | Digital Asset Valuation Toolkit | $97 |
+| | The Digital City E-book | $99 |
+| Top | Portfolio OS Worksheet | $127 |
+
+Aug 1 to Nov 27, 2026: 52 product page views in total, all "direct", and
+0 sales. The catalog is not the bottleneck; traffic is. Every Library
+article and newsletter issue should send readers to one specific product.

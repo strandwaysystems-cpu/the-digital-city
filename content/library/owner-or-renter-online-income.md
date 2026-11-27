@@ -4,9 +4,9 @@ description: Most online income is rented from a platform that can change the ru
 district: city-planning
 date: 2026-11-27
 status: published
-product_name: Owner vs Renter Assessment
+product_name: Owner vs. Renter Self-Assessment
 product_url: https://buildyourdigitalcity.gumroad.com/l/owner-vs-renter
-product_pitch: Discover where you stand in the digital economy: building assets that compound, or renting attention from platforms that do.
+product_pitch: A 25-question audit of your real position in the internet economy. Score where you stand today, spot the renter patterns quietly costing you, and get a district-specific recommendation for your first move toward ownership.
 ---
 
 Every city has owners and renters. Renters can live well, sometimes better than owners for a while. But when the landlord raises the rent, sells the building or changes the rules, the renter has to adapt. The owner sets the terms.
