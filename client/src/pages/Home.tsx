@@ -875,8 +875,8 @@ function Footer() {
                 {s.name}
               </a>
             ))}
-            <a href="mailto:support@buildyourdigitalcity.com" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">
-              support@buildyourdigitalcity.com
+            <a href="mailto:hello@buildyourdigitalcity.com" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">
+              hello@buildyourdigitalcity.com
             </a>
           </div>
         </div>

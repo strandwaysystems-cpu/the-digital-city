@@ -13,8 +13,8 @@ export const BRAND = {
   tagline: "How the internet economy really works.",
   description:
     "The Digital City publishes plain-English guides, frameworks and digital products on how online businesses actually make money: affiliate marketing, semi-passive business ideas, digital products, and the tools and platforms worth using.",
-  email: "support@buildyourdigitalcity.com",
-  privacyEmail: "privacy@buildyourdigitalcity.com",
+  /** The one inbox for everything: questions, orders, refunds, privacy, partnerships. */
+  email: "hello@buildyourdigitalcity.com",
   logo: `${SITE_URL}/logo.jpg`,
   store: "https://buildyourdigitalcity.gumroad.com",
   socials: SOCIALS,
@@ -44,12 +44,6 @@ export function organizationNode() {
         contactType: "customer support",
         email: BRAND.email,
         url: `${SITE_URL}/contact`,
-        availableLanguage: ["English"],
-      },
-      {
-        "@type": "ContactPoint",
-        contactType: "privacy",
-        email: BRAND.privacyEmail,
         availableLanguage: ["English"],
       },
     ],
