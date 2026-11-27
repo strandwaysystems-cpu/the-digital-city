@@ -58,7 +58,9 @@ Node.js page for changes to take effect.
 
 - The logo and other static assets are now served directly from
   `client/public` (no external storage dependency).
-- The email signup form posts to Kit's REST API directly using `KIT_API_KEY`;
-  if unset, signups are still recorded in the database but won't sync to Kit.
+- Newsletter signups use the Hostinger Reach form "Website signup", embedded
+  with Reach's script (`shared/reach.ts`). No email-platform keys are needed
+  on the server. The old Kit endpoint (`subscribe.join`, `KIT_API_KEY`) is no
+  longer used by any page.
 - Login/account pages and the old Stripe checkout were already removed —
   all products are sold via external Gumroad links.

@@ -70,27 +70,7 @@
           return text(list.length ? JSON.stringify(list, null, 2) : "See https://buildyourdigitalcity.gumroad.com");
         });
       },
-    },
-    {
-      name: "subscribe_to_newsletter",
-      description:
-        "Subscribe an email address to The Digital City's free weekly newsletter. Only use the user's own email address, and only when the user has asked to subscribe. They will receive a confirmation email.",
-      inputSchema: {
-        type: "object",
-        properties: { email: { type: "string", format: "email", description: "The user's email address" } },
-        required: ["email"],
-      },
-      execute: function (input) {
-        var email = String((input && input.email) || "").trim();
-        return fetch("/api/trpc/subscribe.join", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ json: { email: email, source: "webmcp" } }),
-        }).then(function (r) {
-          return text(r.ok ? "Subscribed. A confirmation email is on its way to " + email + "." : "That didn't work. Check the email address and try again.");
-        });
-      },
-    },
+    }
   ];
 
   tools.forEach(function (tool) {

@@ -6,7 +6,7 @@
 |---|---|---|
 | **TikTok, Instagram, X** | Get found. Short posts that tease each article. | @thedigitalcity · @buildyourdigitalcity · @bydigitalcity |
 | **The Library** | The home base. Permanent articles that get found on Google. | buildyourdigitalcity.com/library |
-| **The newspaper** (weekly email) | Bring people back. A short roundup in fixed sections. | Kit |
+| **The newspaper** (weekly email) | Bring people back. A short roundup in fixed sections. | Hostinger Reach |
 | **Gumroad products** | Earn now. One product linked at the end of each article. | buildyourdigitalcity.gumroad.com |
 | **Affiliate links** | Earn later. Added to tool articles once you're approved. | Inside Library articles |
 
@@ -29,7 +29,7 @@ leads with the newest article.
 | Nov 30 | Affiliate Marketing in 2027: What's Changed and What Still Works | Yearly guide | District Selector Worksheet (CA$9) |
 | Dec 7 | 7 Semi-Passive Online Business Ideas to Try in 2027 | Idea list | Owner vs. Renter Self-Assessment (CA$17) |
 | Dec 14 | The Best Platforms to Sell Digital Products in 2027 | Tools | The 90-Day Digital Property Builder (CA$79) |
-| Dec 21 | Kit vs Beehiiv vs MailerLite: Which Newsletter Platform to Use | Tools | The Digital City Prompt Kit (CA$27) |
+| Dec 21 | Hostinger Reach vs Kit vs Beehiiv vs MailerLite: Which Newsletter Platform to Use | Tools | The Digital City Prompt Kit (CA$27) |
 | Dec 28 | Your Year-End Owner-or-Renter Audit | Yearly guide | Owner vs. Renter Self-Assessment (CA$17) |
 
 You've used all three newsletter platforms across your brands, so the Dec 21
@@ -41,7 +41,8 @@ tool reviews trustworthy, and it's what Google rewards.
 | Day | Task | Time |
 |---|---|---|
 | Monday | Write the week's Library article and publish it | 2 h |
-| Tuesday | Fill in the newspaper template (`newsletter/issue-template.md`) and schedule it in Kit for Thursday | 1 h |
+| Tuesday | Write the newspaper issue (`newsletter/issue-template.md`). In Reach, copy last week's campaign (or start from the "The Digital City Times - weekly issue" template), fill it in and send a test to yourself | 1 h |
+| Thursday | Send the issue in Reach (scheduled sending isn't on the current plan, so send it by hand) | 5 min |
 | Wednesday | Make 3 short posts from the article and schedule them on TikTok, Instagram and X | 1.5 h |
 | Friday | Weekly scorecard (below) | 30 min |
 
@@ -49,8 +50,8 @@ tool reviews trustworthy, and it's what Google rewards.
 
 | Metric | Where to find it |
 |---|---|
-| New newspaper subscribers / total | Kit → Subscribers |
-| Open rate and click rate | Kit → Broadcasts |
+| New newspaper subscribers / total | Reach → Contacts (Claude can pull this) |
+| Open rate and click rate | Reach → Campaigns (Claude can pull this) |
 | Gumroad product views and sales | Gumroad → Analytics (Claude can pull this) |
 | Library page views | Site analytics |
 | Search impressions and clicks | Google Search Console → Performance |
@@ -58,6 +59,21 @@ tool reviews trustworthy, and it's what Google rewards.
 
 Search traffic usually takes 2–3 months to show up for a new section. In the
 first 8 weeks, watch subscriber growth and clicks on product links.
+
+## The newsletter on Hostinger Reach
+
+- **Signups:** every signup box on the site (homepage hero, homepage footer
+  section, every Library page) is the Reach form "Website signup". It's
+  embedded with Reach's script, so no API keys live on the website. Each
+  subscriber gets the tag `form:Website signup`.
+- **Sending:** from hello@buildyourdigitalcity.com. The domain is verified
+  in Reach (SPF, DKIM and DMARC records are in place).
+- **Template:** "The Digital City Times - weekly issue" in Reach, also kept in
+  `newsletter/reach-template.html`. Issue #1 is waiting as a draft.
+- **Plan limits (trial, until Nov 2027):** 100 subscribers and 200 emails a
+  month. Weekly sends hit the monthly cap at about 50 subscribers, so plan to
+  upgrade around then. Scheduled sending, automations (welcome emails),
+  personalization and pop-up forms are not included.
 
 ## Publishing a Library article
 
