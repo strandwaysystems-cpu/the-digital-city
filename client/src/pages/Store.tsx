@@ -14,6 +14,7 @@
 import { Link } from "wouter";
 import { ExternalLink, Clock, Download } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { SOCIALS } from "@shared/socials";
 
 const LOGO = "/logo.jpg";
 
@@ -220,6 +221,10 @@ export default function Store() {
             <Link href="/" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
               Home
             </Link>
+            {/* Plain <a>: /library is server-rendered, not a client route. */}
+            <a href="/library" className="text-xs text-white/40 hover:text-white/90 transition-colors hidden sm:block font-medium tracking-wide uppercase">
+              Library
+            </a>
             <Link href="/store" className="text-xs text-cyan-400 transition-colors hidden sm:block font-medium tracking-wide uppercase">
               Store
             </Link>
@@ -329,6 +334,13 @@ export default function Store() {
             <Link href="/" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium">
               Back to Home
             </Link>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-5">
+            {SOCIALS.map(s => (
+              <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="text-xs text-white/30 hover:text-white/60 transition-colors font-medium" aria-label={`The Digital City on ${s.name} (${s.handle})`}>
+                {s.name}
+              </a>
+            ))}
           </div>
         </div>
       </footer>
