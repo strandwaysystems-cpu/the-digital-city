@@ -195,8 +195,7 @@ export function contactMarkdown(): string {
     "",
     "> The fastest way to reach us is email.",
     "",
-    `- General questions, products and refunds: [${BRAND.email}](mailto:${BRAND.email})`,
-    `- Privacy and data requests: [${BRAND.privacyEmail}](mailto:${BRAND.privacyEmail})`,
+    `Email [${BRAND.email}](mailto:${BRAND.email}) for anything: questions, orders and refunds, privacy and data requests, or partnerships.`,
     "",
     "## Social",
     "",
@@ -246,13 +245,7 @@ export function renderContact(): string {
   const body = `${heroBlock(BRAND.name, `Contact ${BRAND.name}`, "The fastest way to reach us is email.")}
 <main class="wrap">
 <article>
-<div class="table-wrap"><table>
-<thead><tr><th>For</th><th>Email</th></tr></thead>
-<tbody>
-<tr><td>General questions, products and refunds</td><td><a href="mailto:${BRAND.email}">${BRAND.email}</a></td></tr>
-<tr><td>Privacy and data requests</td><td><a href="mailto:${BRAND.privacyEmail}">${BRAND.privacyEmail}</a></td></tr>
-</tbody>
-</table></div>
+<p class="intro">Email <a href="mailto:${BRAND.email}"><strong>${BRAND.email}</strong></a> for anything: questions, orders and refunds, privacy and data requests, or partnerships.</p>
 <h2 id="social">Social</h2>
 <ul>
 ${BRAND.socials.map(s => `<li><a href="${s.url}" target="_blank" rel="noopener noreferrer">${esc(s.name)} ${esc(s.handle)}</a></li>`).join("\n")}
@@ -347,7 +340,7 @@ ${productList(prods)}`,
     description: "How The Digital City collects, uses and protects your personal data.",
     h1: "Privacy Policy",
     content: () =>
-      `<p>How The Digital City, operated by ${esc(BRAND.legalOperator)}, collects, uses and protects your personal data. Questions: <a href="mailto:${BRAND.privacyEmail}">${BRAND.privacyEmail}</a>.</p>`,
+      `<p>How The Digital City, operated by ${esc(BRAND.legalOperator)}, collects, uses and protects your personal data. Questions: <a href="mailto:${BRAND.email}">${BRAND.email}</a>.</p>`,
   },
   "/terms": {
     title: "Terms of Service | The Digital City",

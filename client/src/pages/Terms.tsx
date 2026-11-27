@@ -36,7 +36,7 @@ export default function Terms() {
           <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight">
             Terms of <span className="text-glow-cyan">Service</span>
           </h1>
-          <p className="text-white/40 text-sm mb-12">Last updated: June 22, 2026</p>
+          <p className="text-white/40 text-sm mb-12">Last updated: November 27, 2026</p>
 
           <div className="space-y-10 text-white/70 leading-relaxed text-[15px]">
             {/* Introduction */}
@@ -104,7 +104,7 @@ export default function Terms() {
                 If you experience a technical issue that prevents you from accessing your purchased Product, contact us within 14 days of purchase and we will resolve the issue or provide a full refund.
               </p>
               <p>
-                Refund requests for reasons other than technical issues are evaluated on a case-by-case basis at our sole discretion. To request a refund, email support@buildyourdigitalcity.com within 14 days of purchase.
+                Refund requests for reasons other than technical issues are evaluated on a case-by-case basis at our sole discretion. To request a refund, email hello@buildyourdigitalcity.com within 14 days of purchase.
               </p>
             </div>
 
@@ -213,7 +213,7 @@ export default function Terms() {
               </p>
               <div className="mt-4 glass-card p-6">
                 <p className="text-white font-semibold">Strandway Systems</p>
-                <p className="text-white/60 mt-1">Email: support@buildyourdigitalcity.com</p>
+                <p className="text-white/60 mt-1">Email: hello@buildyourdigitalcity.com</p>
                 <p className="text-white/60">Website: buildyourdigitalcity.com</p>
               </div>
             </div>

@@ -29,7 +29,7 @@ describe("renderSpaShell", () => {
     expect(html).toContain('<link rel="canonical" href="https://buildyourdigitalcity.com/">');
     expect(html).not.toContain("<title>Old</title>");
     expect(html.match(/<h1>/g)).toHaveLength(1);
-    expect(html).toContain("mailto:support@buildyourdigitalcity.com");
+    expect(html).toContain("mailto:hello@buildyourdigitalcity.com");
     expect(html).toContain('href="/about"');
     expect(html).toContain('href="/contact"');
     expect(html).toContain('href="/terms"');
@@ -37,7 +37,7 @@ describe("renderSpaShell", () => {
     expect(types).toEqual(expect.arrayContaining(["Organization", "WebSite", "WebPage"]));
     const org = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)![1])["@graph"][0];
     expect(org.sameAs).toContain("https://www.tiktok.com/@thedigitalcity");
-    expect(org.email).toBe("support@buildyourdigitalcity.com");
+    expect(org.email).toBe("hello@buildyourdigitalcity.com");
   });
 
   it("returns 404 with noindex for unknown paths", async () => {
@@ -57,7 +57,7 @@ describe("about and contact pages", () => {
     for (const html of [renderAbout(), renderContact()]) {
       expect(html.match(/<h1>/g)).toHaveLength(1);
       expect(html).toMatch(/<link rel="canonical" href="https:\/\/buildyourdigitalcity\.com\/(about|contact)">/);
-      expect(html).toContain("mailto:support@buildyourdigitalcity.com");
+      expect(html).toContain("mailto:hello@buildyourdigitalcity.com");
     }
     expect(jsonLdTypes(renderContact())).toContain("ContactPage");
   });

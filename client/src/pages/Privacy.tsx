@@ -36,7 +36,7 @@ export default function Privacy() {
           <h1 className="text-4xl font-extrabold text-white mb-2 tracking-tight">
             Privacy <span className="text-glow-cyan">Policy</span>
           </h1>
-          <p className="text-white/40 text-sm mb-12">Last updated: June 22, 2026</p>
+          <p className="text-white/40 text-sm mb-12">Last updated: November 27, 2026</p>
 
           <div className="space-y-10 text-white/70 leading-relaxed text-[15px]">
             {/* Introduction */}
@@ -51,7 +51,7 @@ export default function Privacy() {
             <div>
               <h2 className="text-xl font-bold text-white mb-3">2. Data Controller</h2>
               <p>
-                Strandway Systems is the data controller responsible for your personal data. If you have questions about this Privacy Policy or our data practices, you may contact us at privacy@buildyourdigitalcity.com.
+                Strandway Systems is the data controller responsible for your personal data. If you have questions about this Privacy Policy or our data practices, you may contact us at hello@buildyourdigitalcity.com.
               </p>
             </div>
 
@@ -151,7 +151,7 @@ export default function Privacy() {
                 <li><span className="text-white/90 font-medium">Withdraw Consent:</span> Withdraw consent at any time where processing is based on consent.</li>
               </ul>
               <p className="mt-4">
-                To exercise any of these rights, contact us at privacy@buildyourdigitalcity.com. We will respond within 30 days.
+                To exercise any of these rights, contact us at hello@buildyourdigitalcity.com. We will respond within 30 days.
               </p>
             </div>
 
@@ -208,7 +208,7 @@ export default function Privacy() {
               </p>
               <div className="mt-4 glass-card p-6">
                 <p className="text-white font-semibold">Strandway Systems</p>
-                <p className="text-white/60 mt-1">Email: privacy@buildyourdigitalcity.com</p>
+                <p className="text-white/60 mt-1">Email: hello@buildyourdigitalcity.com</p>
                 <p className="text-white/60">Website: buildyourdigitalcity.com</p>
               </div>
               <p className="mt-4">
