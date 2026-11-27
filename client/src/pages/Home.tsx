@@ -92,12 +92,12 @@ const FALLBACK_PRODUCTS: DisplayProduct[] = [
     name: "Owner vs Renter Assessment",
     typeLabel: "Assessment",
     icon: Sparkles,
-    price: "$9",
+    price: "CA$17",
     isFree: false,
     desc: "Discover where you stand in the digital economy — building assets that compound, or renting attention from platforms that do.",
     href: "https://buildyourdigitalcity.gumroad.com/l/owner-vs-renter",
     external: true,
-    cta: "Get It · $9",
+    cta: "Get It · CA$17",
   },
   {
     key: "digital-city-ebook",
@@ -111,15 +111,16 @@ const FALLBACK_PRODUCTS: DisplayProduct[] = [
     cta: "Buy the Book",
   },
   {
-    key: "sovereign-entrepreneur",
-    name: "The Sovereign Digital Entrepreneur",
-    typeLabel: "Strategic Guide",
+    key: "invisible-economy",
+    name: "The Invisible Economy",
+    typeLabel: "Field Guide",
     icon: Sparkles,
     price: "Free",
     isFree: true,
-    desc: "Strategic frameworks for online monetization in 2026. Master AI orchestration and zero-capital business models.",
-    href: "#subscribe",
-    cta: "Download Free",
+    desc: "A short field guide to the internet economy you're already inside, and which side of it you're on. Pay what you want.",
+    href: "https://buildyourdigitalcity.gumroad.com/l/invisible-economy",
+    external: true,
+    cta: "Get It Free",
   },
   {
     key: "portfolio-blueprint",
@@ -131,17 +132,6 @@ const FALLBACK_PRODUCTS: DisplayProduct[] = [
     desc: "A step-by-step system for building your first digital asset portfolio.",
     href: "/store",
     cta: "Get Blueprint",
-  },
-  {
-    key: "builders-toolkit",
-    name: "The Builder's Toolkit",
-    typeLabel: "Toolkit",
-    icon: Code2,
-    price: "Free",
-    isFree: true,
-    desc: "Every tool you need to build a digital asset portfolio — honest assessments, real recommendations.",
-    href: "#subscribe",
-    cta: "Download Free",
   },
 ];
 
@@ -301,7 +291,7 @@ function HeroSection() {
           >
             <EmailCapture variant="hero" />
             <p className="text-xs text-white/25 font-medium">
-              Free framework guide. No spam, ever.
+              Free weekly newsletter. No spam, unsubscribe anytime.
             </p>
             <Link
               href="/store"
@@ -661,10 +651,9 @@ function ProductsSection() {
   const useLive = liveProducts.length > 0;
   const isLoading = gumroad.isLoading || (!useLive && db.isLoading);
 
-  // Fallback path (Gumroad empty/unreachable): the site DB catalog, where
-  // free products funnel through the email opt-in (lead magnet) and paid
-  // ones go to the store; then the curated static list, so the section
-  // never renders blank.
+  // Fallback path (Gumroad empty/unreachable): the site DB catalog, linking
+  // to the store; then the curated static list, so the section never
+  // renders blank. (Signing up no longer delivers a free download.)
   const products: DisplayProduct[] =
     db.data && db.data.length > 0
       ? db.data.map((p) => {
@@ -681,8 +670,8 @@ function ProductsSection() {
             price: isFree ? "Free" : formatPrice(p.price),
             isFree,
             desc: p.shortDescription || p.description || "",
-            href: isFree ? "#subscribe" : "/store",
-            cta: isFree ? "Download Free" : `Get It · ${formatPrice(p.price)}`,
+            href: "/store",
+            cta: isFree ? "Get It Free" : `Get It · ${formatPrice(p.price)}`,
           };
         })
       : FALLBACK_PRODUCTS;
@@ -795,7 +784,7 @@ function EmailCaptureSection() {
           </motion.h2>
 
           <motion.p variants={fadeUp} className="text-white/45 mb-10 leading-relaxed max-w-lg mx-auto">
-            Join the builders who are learning to see the digital economy for what it is — and building their stake in it. Get the free framework guide when you join.
+            Join the builders who are learning to see the digital economy for what it is — and building their stake in it. One clear breakdown of how an online business works, every week. Free.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex justify-center">
